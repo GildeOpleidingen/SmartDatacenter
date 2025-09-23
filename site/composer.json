@@ -1,5 +1,5 @@
 {
-    "name": "datacenter-dashboard",
+    "name": "gilde/datacenter-dashboard",
     "description": "Dashboard for LoRaWAN sensor data.",
     "autoload": {
         "psr-4": {
