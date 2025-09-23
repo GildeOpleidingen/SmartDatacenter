@@ -1,0 +1,9 @@
+{
+    "name": "datacenter-dashboard",
+    "description": "Dashboard for LoRaWAN sensor data.",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    }
+}
