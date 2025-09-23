@@ -1,5 +1,4 @@
 # SmartDatacenter
-# SmartDatacenter
 
 Dit project is een webgebaseerd dashboard voor het visualiseren van real-time data van LoRaWAN-sensoren in een datacenter. De applicatie is gebouwd met PHP, HTML, CSS en JavaScript en maakt gebruik van een Object-Georiënteerde (OOP) architectuur voor een schone scheiding van code en functionaliteit.
 
