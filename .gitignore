@@ -1,0 +1,9 @@
+# Ignore the vendor directory
+/site/vendor/
+
+# Ignore Composer's autoloader and cache
+composer.lock
+.composer-cache/
+
+# Ignore environment variables
+.env
