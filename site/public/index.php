@@ -11,25 +11,9 @@
         <h1>Datacenter Status</h1>
     </header>
     <main>
-        <div class="sensor-card">
-            <h2>Temperatuur</h2>
-            <p id="temperature-value" class="sensor-value">-- °C</p>
-            <small id="temperature-time">Laatste update: nog niet bekend</small>
-        </div>
-
-        <div class="sensor-card">
-            <h2>Luchtvochtigheid</h2>
-            <p id="humidity-value" class="sensor-value">-- %</p>
-            <small id="humidity-time">Laatste update: nog niet bekend</small>
-        </div>
-
-        <div class="sensor-card">
-            <h2>Deurstatus</h2>
-            <p id="door-value" class="sensor-value">--</p>
-            <small id="door-time">Laatste update: nog niet bekend</small>
-        </div>
+        <p>Laden van sensor data...</p>
     </main>
 
-    <script src="script.js"></script>
 </body>
 </html>
+<script src="index.js"></script>

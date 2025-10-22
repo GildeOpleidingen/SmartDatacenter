@@ -6,6 +6,7 @@ namespace App\Database;
 use App\Config\DatabaseConfig;
 use PDO;
 use PDOException;
+use Exception; // Zorg ervoor dat deze import er is
 
 class Connection
 {
@@ -24,7 +25,8 @@ class Connection
             try {
                 self::$pdo = new PDO($dsn, DatabaseConfig::USER, DatabaseConfig::PASSWORD, $options);
             } catch (PDOException $e) {
-                throw new PDOException($e->getMessage(), (int)$e->getCode());
+                // GOOI EEN GENERIEKE EXCEPTION DIE public/api.php KAN VANGEN
+                throw new Exception("Database Connection Failed: " . $e->getMessage(), (int)$e->getCode());
             }
         }
         return self::$pdo;
