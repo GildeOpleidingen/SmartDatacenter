@@ -1,5 +1,5 @@
 <?php
-include_once 'DBConnection.php';
+include_once 'includes/database/DBConnection.php';
 class DBParser {
 
     private $pdo;
@@ -8,7 +8,7 @@ class DBParser {
         $this->pdo = DBConn::getInstance();
     }
 
-    public function storeActivity($json) {
+    public function parseDataToDB($json) {
         $stmt = $this->pdo->prepare("
             INSERT INTO activity (data, date)
             VALUES (?, NOW())
