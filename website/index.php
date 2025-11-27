@@ -1,6 +1,6 @@
 <?php
     $json = file_get_contents('php://input');
-    include_once 'DBParser.php';
+    include_once __DIR__ . '/includes/database/DBParser.php';
     //if (!empty($json)) {
         $parser = new DBParser();    
         $parser->parseDataToDB($json);
