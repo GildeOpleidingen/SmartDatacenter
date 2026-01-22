@@ -44,7 +44,7 @@ class DBParser {
                 $abstractClass = DoorSensor::Deserialize(json_encode($payload->uplink_message->decoded_payload));
                 $abstractClass->setValue($payload->end_device_ids->device_id);
                 break;
-            case "tempSensor":
+            case "temperatureSensor":
                 $abstractClass = TempSensor::Deserialize(json_encode($payload->uplink_message->decoded_payload));
                 $abstractClass->setValue($payload->end_device_ids->device_id);
                 break;

@@ -4,6 +4,7 @@ include_once __DIR__ . '/includes/Definer.php';
 $parser = new DBParser();
 $define = new Definer();
 $device_cards = $parser->generateCards();
+$fields = $define->getFields();
 var_dump($device_cards);
 ?>
 <!DOCTYPE html>
@@ -47,7 +48,7 @@ var_dump($device_cards);
             <div class="mt-4 text-sm">
                     <ul class="space-y-1">
                         <?php foreach ($fields as $key):  
-                            if (!isset($card["payload"][$key])) continue;
+                            if (!isset($card->device_id[$key])) continue;
                             $value = $card["payload"][$key];
 
                             if ($key === "DOOR_OPEN_STATUS") {
@@ -64,7 +65,7 @@ var_dump($device_cards);
 
             <!-- Updated -->
             <div class="text-right text-gray-400 text-sm mt-4">
-                <?= $define->format_updated($card["last_update"]) ?>
+                <!--?= //$define->format_updated($card["last_update"]) ?-->
             </div>
 
         </div>
