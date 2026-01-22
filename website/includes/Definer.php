@@ -88,13 +88,29 @@ class Definer{
         return $devices;
     }
 
-    public function getActivity(){
-        $devices = $this->pdo->prepare("
-            SELECT d.device_Id, d.type_Id
-            FROM device d
-            ORDER BY d.Id
+    public function getDeviceType($deviceId) {
+        $result = $this->pdo->prepare("
+            SELECT d.type_Id, d.type_name a.*
+            FROM device d., activity a
+            join d on d.Id = a.device_Id
+            WHERE device_Id = ?
         ");
-        return $devices;
+        $result->execute([$deviceId]);
+        return $result->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getActivity($deviceId) {
+        $stmt = $this->pdo->prepare("
+            SELECT d.device_Id, a.data, a.date, s.type
+            FROM device d
+            left join sensortype s on s.type = d.type_Id 
+            left join activity a on a.device_Id = d.device_Id
+            WHERE d.device_Id = ?
+            AND a.data like '%decoded_payload%'
+            ORDER BY a.date DESC;
+        ");
+        $stmt->execute($deviceId);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function getLogs(){
@@ -107,7 +123,31 @@ class Definer{
     }
 
 
-
-
 }
+
+
+abstract class JsonDeserializer
+{
+    public static function Deserialize($json)
+    {
+        $className = get_called_class();
+        $classInstance = new $className();
+        if (is_string($json))
+            $json = json_decode($json);
+        foreach ($json as $key => $value)
+            $classInstance->{$key} = $value;
+        return $classInstance;
+    }
+
+    public static function DeserializeArray($json)
+    {
+        $json = json_decode($json);
+        $items = [];
+        foreach ($json as $item)
+            $items[] = self::Deserialize($item);
+        return $items;
+    }
+}
+
+
 ?>

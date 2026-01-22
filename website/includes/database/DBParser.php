@@ -1,6 +1,8 @@
 <?php
 include_once __DIR__ . '/DBConnection.php';
 include_once __DIR__ . '/../Definer.php';
+require_once(__DIR__ . '/../Models/Devices.php');
+
 class DBParser {
     public $definer;
     private $pdo;
@@ -20,23 +22,44 @@ class DBParser {
     }
     
     public function generateCards() {
-        $device_cards = [];
         $devices = $this->definer->getDevices();
-        foreach ($devices as $dev) {
-
-            // activity
-            $this->definer->getActivity()->execute([$dev["device_Id"]]);
-            $activity = $this->definer->getActivity()->fetch();
-
-            $payload = null;
-            if ($activity && trim($activity["data"]) !== "") {
-                $json = json_decode($activity["data"], true);
-                if ($json && isset($json["uplink_message"]["decoded_payload"])) {
-                    $payload = $json["uplink_message"]["decoded_payload"];
+        $card_info = [];
+        foreach ($devices as $key => $dev) {
+            if ($dev["device_Id"]){
+                $activity = $this->definer->getActivity([$dev["device_Id"]]);
+                if ($activity && trim($activity["data"]) !== "") {
+                    $card_info[$key]= $this->getSensorType($dev["type_Id"], json_decode($activity["data"]));
                 }
             }
         }
-    }
+        return $card_info;
+}
+                
+    
+
+    public function getSensorType($type, $payload) {
+        $abstractClass = null;    
+        switch($type){
+            case "doorSensor":
+                $abstractClass = DoorSensor::Deserialize(json_encode($payload->uplink_message->decoded_payload));
+                $abstractClass->setValue($payload->end_device_ids->device_id);
+                break;
+            case "tempSensor":
+                $abstractClass = TempSensor::Deserialize(json_encode($payload->uplink_message->decoded_payload));
+                $abstractClass->setValue($payload->end_device_ids->device_id);
+                break;
+            case "motionSensor":
+                $abstractClass = MotionSensor::Deserialize(json_encode($payload->uplink_message->decoded_payload));
+                $abstractClass->setValue($payload->end_device_ids->device_id);
+                break;
+            case "powerSocket":
+                $abstractClass = PowerSocket::Deserialize(json_encode($payload->uplink_message->decoded_payload));
+                $abstractClass->setValue($payload->end_device_ids->device_id); 
+                break;
+            }
+            return $abstractClass;
+
+        }
         // log
         // $getLog->execute([$dev["device_Id"]]);
         // $log = $getLog->fetch();

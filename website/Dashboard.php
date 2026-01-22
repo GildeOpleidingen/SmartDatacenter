@@ -3,7 +3,8 @@ include_once __DIR__ . '/includes/database/DBParser.php';
 include_once __DIR__ . '/includes/Definer.php';
 $parser = new DBParser();
 $define = new Definer();
-
+$device_cards = $parser->generateCards();
+var_dump($device_cards);
 ?>
 <!DOCTYPE html>
 <html>
@@ -19,16 +20,15 @@ $define = new Definer();
 <body class="text-white p-8">
 
     <!-- Header -->
-    <div class="flex items-center mb-10">
-        <img src="/src/img/GildeLogoDatacenter.svg" class="h-20">
+    <div class="flex flex-col mb-10">
+        <img src="src/img/GildeLogoDatacenter.svg" width="500px" class="mb-7"></img>
         <div class="flex-1 ml-6 border-t border-gray-500"></div>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
-        <?php foreach ($device_cards as $card): 
-            [$borderColor, $statusLabel] = $define->status_color_and_label($card["status"]);
-            $fields = $sensor_fields[$card["type"]] ?? [];
+        <?php foreach ($device_cards as $card):
+            //[$borderColor, $statusLabel] = $define->status_color_and_label($card["status"]);
         ?>
         <div class="bg-[#2b2b2d] p-6 rounded-2xl border-2" style="border-color: <?= $borderColor ?>">
 
@@ -36,19 +36,15 @@ $define = new Definer();
             <div class="flex justify-between">
                 <div class="flex items-center">
                     <span class="card-dot mr-2"></span>
-                    <span class="text-lg font-semibold"><?= htmlspecialchars($card["device_Id"]) ?></span>
+                    <span class="text-lg font-semibold"><?= htmlspecialchars($card->device_id) ?></span>
                 </div>
                 <div class="text-right">
-                    <div class="font-semibold"><?= $statusLabel ?></div>
-                    <div class="text-gray-400 text-sm"><?= htmlspecialchars($card["type"]) ?></div>
+                    <!--div class="font-semibold"><//?= $statusLabel ?></div-->
                 </div>
             </div>
 
             <!-- Payload -->
             <div class="mt-4 text-sm">
-                <?php if (!$card["payload"]): ?>
-                    <div class="text-gray-400">No data available.</div>
-                <?php else: ?>
                     <ul class="space-y-1">
                         <?php foreach ($fields as $key):  
                             if (!isset($card["payload"][$key])) continue;
@@ -64,7 +60,6 @@ $define = new Definer();
                         </li>
                         <?php endforeach; ?>
                     </ul>
-                <?php endif; ?>
             </div>
 
             <!-- Updated -->
