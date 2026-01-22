@@ -3,27 +3,30 @@ require_once(__DIR__ . '/../Definer.php');
 
 class Sensor extends JsonDeserializer
 {
-    // Base class for sensors
     public $device_id;
-    function setValue($value){
+    public $sensorType;
+    function setDeviceId($value){
         $this->device_id = $value;
+    }
+    function setSensorType($value){
+        $this->sensorType = $value;
     }
 
 }
 
 class DoorSensor extends Sensor
 {
-    public $alarm;
+    public $ALARM;
     
-    public $bat_v;
+    public $BAT_V;
     
-    public $door_open_status;
+    public $DOOR_OPEN_STATUS;
     
-    public $door_open_times;
+    public $DOOR_OPEN_TIMES;
 
-    public $last_door_open_duration;
+    public $LAST_DOOR_OPEN_DURATION;
 
-    public $mod;
+    public $MOD;
 }
 
 class MotionSensor extends Sensor
@@ -59,13 +62,13 @@ class PowerSocket extends Sensor
 
 class TempSensor extends Sensor
 {
-    public $ext;
+    public $Ext;
     
-    public $hum_sht;
+    public $Hum_SHT;
     
-    public $systimestamp;
+    public $Systimestamp;
     
-    public $tempc_ds;
+    public $TempC_DS;
 
-    public $tempc_sht;
+    public $TempC_SHT;
 }

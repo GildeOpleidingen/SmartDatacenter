@@ -5,7 +5,6 @@ $parser = new DBParser();
 $define = new Definer();
 $device_cards = $parser->generateCards();
 $fields = $define->getFields();
-var_dump($device_cards);
 ?>
 <!DOCTYPE html>
 <html>
@@ -47,17 +46,12 @@ var_dump($device_cards);
             <!-- Payload -->
             <div class="mt-4 text-sm">
                     <ul class="space-y-1">
-                        <?php foreach ($fields as $key):  
-                            if (!isset($card->device_id[$key])) continue;
-                            $value = $card["payload"][$key];
-
-                            if ($key === "DOOR_OPEN_STATUS") {
-                                $value = $define->door_state_label($value);
-                            }
+                        <?php foreach ($card as $key => $value):  
+                            echo $key . " => ". $value;
                         ?>
                         <li class="flex justify-between">
-                            <span class="text-gray-300"><?= $define->getLabels($key) ?></span>
-                            <span class="font-medium"><?= htmlspecialchars($value) ?></span>
+                            <span class="text-gray-300"><!--?= //$define->getLabels($key) ?--></span>
+                            <span class="font-medium"><!--?= //htmlspecialchars($value) ?--></span>
                         </li>
                         <?php endforeach; ?>
                     </ul>
@@ -75,3 +69,13 @@ var_dump($device_cards);
 
 </body>
 </html>
+
+<?php                       
+                            /*foreach ($devices as $device):  
+                            if (!isset($card->device_id[$key])) continue;
+                            $value = $card["payload"][$key];
+                            var_dump($key);
+                             
+                            if ($key === "DOOR_OPEN_STATUS") {
+                                $value = $define->door_state_label($value);
+                            };*/

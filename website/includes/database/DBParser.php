@@ -30,6 +30,8 @@ class DBParser {
                 if ($activity && trim($activity["data"]) !== "") {
                     $card_info[$key]= $this->getSensorType($dev["type_Id"], json_decode($activity["data"]));
                 }
+                        //var_dump(value: $activity["data"]);
+
             }
         }
         return $card_info;
@@ -42,19 +44,23 @@ class DBParser {
         switch($type){
             case "doorSensor":
                 $abstractClass = DoorSensor::Deserialize(json_encode($payload->uplink_message->decoded_payload));
-                $abstractClass->setValue($payload->end_device_ids->device_id);
+                $abstractClass->setDeviceId($payload->end_device_ids->device_id);
+                $abstractClass->setSensorType($type);
                 break;
             case "temperatureSensor":
                 $abstractClass = TempSensor::Deserialize(json_encode($payload->uplink_message->decoded_payload));
-                $abstractClass->setValue($payload->end_device_ids->device_id);
+                $abstractClass->setDeviceId($payload->end_device_ids->device_id);
+                $abstractClass->setSensorType($type);
                 break;
             case "motionSensor":
                 $abstractClass = MotionSensor::Deserialize(json_encode($payload->uplink_message->decoded_payload));
-                $abstractClass->setValue($payload->end_device_ids->device_id);
+                $abstractClass->setDeviceId($payload->end_device_ids->device_id);
+                $abstractClass->setSensorType($type);
                 break;
             case "powerSocket":
                 $abstractClass = PowerSocket::Deserialize(json_encode($payload->uplink_message->decoded_payload));
-                $abstractClass->setValue($payload->end_device_ids->device_id); 
+                $abstractClass->setDeviceId($payload->end_device_ids->device_id);
+                $abstractClass->setSensorType($type); 
                 break;
             }
             return $abstractClass;
