@@ -34,11 +34,10 @@ class Definer{
 
             'motion' => 'Motion',
             'battery_volt' => 'Battery Voltage (V)',
-            'humi' => 'Humidity (%)',
-            'temperature' => 'Temperature (°C)',
             'tamper' => 'Tamper',
             'count' => 'Counter',
-            'time' => 'Time'
+            'time' => 'Time',
+            'button' => 'Test Button'
         ];
         return $map[$key] ?? ucwords(str_replace('_', ' ', $key));
     }
@@ -47,7 +46,7 @@ class Definer{
         'powerSocket' => ['voltage','current','factor','power','power_sum','state'],
         'doorSensor' => ['DOOR_OPEN_STATUS','BAT_V','DOOR_OPEN_TIMES','LAST_DOOR_OPEN_DURATION','ALARM','MOD'],
         'temperatureSensor' => ['TempC_SHT','Hum_SHT','TempC_DS','Ext','Systimestamp'],
-        'motionSensor' => ['motion','battery_volt','humi','temperature','tamper','count','time']
+        'motionSensor' => ['motion','battery_volt','tamper','count','time']
     ];
     return $sensor_fields;
     }
@@ -120,6 +119,90 @@ class Definer{
             WHERE device_Id = ?
             ORDER BY date DESC LIMIT 1
         ");
+    }
+
+    public function getDeviceIcon($sensorType, $status, $DoorState, $motion, $powerState){
+        //$sensorType = "beaver"; // test placeholder image for new devices
+        switch($status){
+            case 'Warning':    
+                switch ($sensorType) {
+                    case 'doorSensor':
+                        $path = 'src/img/sensors/sensors/doorSensor/DoorSensorWarning.svg';
+                        break;
+                    case 'temperatureSensor':
+                        $path = 'src/img/sensors/temperatureSensor/TemperatureWarning.svg';
+                        break;
+                    case 'motionSensor':
+                        $path = 'src/img/sensors/motionSensor/MotionSensorWarning.svg';
+                        break;
+                    case 'powerSocket':
+                        $path = 'src/img/sensors/powerSocket/PowerSocketWarning.svg';
+                        break;
+                    default:
+                        $path = 'src/img/sensors/default/GildeDataCenterIconWarning.svg';
+                        break;
+                }
+                break;
+            case 'Error':
+                switch ($sensorType) {
+                    case 'doorSensor':
+                        $path = 'src/img/sensors/doorSensor/DoorSensorError.svg';
+                        break;
+                    case 'temperatureSensor':
+                        $path = 'src/img/sensors/temperatureSensor/TemperatureError.svg';
+                        break;
+                    case 'motionSensor':
+                        $path = 'src/img/sensors/motionSensor/MotionSensorError.svg';
+                        break;
+                    case 'powerSocket':
+                        $path = 'src/img/sensors/powerSocket/PowerSocketError.svg';
+                        break;
+                    default:
+                        $path = 'src/img/sensors/default/GildeDataCenterIconError.svg';
+                        break;
+                }
+                break;
+            case 'Good':
+                switch ($sensorType) {
+                    case 'doorSensor':
+                        switch ($DoorState) {
+                            case 1:
+                                $path = 'src/img/sensors/doorsensoropenicon.svg';
+                                break;
+                            case 0:
+                                $path = 'src/img/sensors/doorsensorclosedicon.svg';
+                                break;
+                        }
+                        break;
+                    case 'temperatureSensor':
+                        $path = 'src/img/sensors/temperatureSensor/TemperatureGood.svg';
+                        break;
+                    case 'motionSensor':
+                        switch ($motion) {
+                            case 1:
+                                $path = 'src/img/sensors/motionSensor/MotionSensorDetected.svg';
+                                break;
+                            case 0:
+                                $path = 'src/img/sensors/motionSensor/MotionSensorIdle.svg';
+                                break;
+                        }
+                        break;
+                    case 'powerSocket':
+                        switch ($powerState) {
+                            case 'open':
+                                $path = 'src/img/sensors/powerSocket/PowerSocketOn.svg';
+                                break;
+                            case 'close':
+                                $path = 'src/img/sensors/powerSocket/PowerSocketOff.svg';
+                                break;
+                        }
+                        break;
+                    default:
+                        $path = 'src/img/sensors/default/GildeDataCenterIconGood.svg';
+                        break;
+                }
+        }
+        return "<img src=\"$path\" width=\"64px\" class=\"ml-auto\">";
     }
 
 

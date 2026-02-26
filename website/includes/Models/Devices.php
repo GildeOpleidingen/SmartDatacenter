@@ -5,12 +5,18 @@ class Sensor extends JsonDeserializer
 {
     public $device_id;
     public $sensorType;
+    public $status = "Good";
+    
     function setDeviceId($value){
         $this->device_id = $value;
     }
     function setSensorType($value){
         $this->sensorType = $value;
     }
+    function setStatus($value){
+        $this->status = $value;
+    }
+    
 
 }
 

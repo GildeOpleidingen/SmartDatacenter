@@ -30,8 +30,6 @@ class DBParser {
                 if ($activity && trim($activity["data"]) !== "") {
                     $card_info[$key]= $this->getSensorType($dev["type_Id"], json_decode($activity["data"]));
                 }
-                        //var_dump(value: $activity["data"]);
-
             }
         }
         return $card_info;
