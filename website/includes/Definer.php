@@ -79,9 +79,9 @@ class Definer{
 
      public function getDevices(): array{
         $devices = $this->pdo->query("
-            SELECT d.device_Id, d.type_Id
+            SELECT d.deviceID, d.type_ID
             FROM device d
-            ORDER BY d.Id
+            ORDER BY d.ID
         ")->fetchAll(PDO::FETCH_ASSOC);
 
         return $devices;
@@ -100,13 +100,13 @@ class Definer{
 
     public function getActivity($deviceId) {
         $stmt = $this->pdo->prepare("
-            SELECT d.device_Id, a.data, a.date, s.type
+            SELECT d.deviceID, a.data, a.dateTime, s.ID
             FROM device d
-            left join sensortype s on s.type = d.type_Id 
-            left join activity a on a.device_Id = d.device_Id
-            WHERE d.device_Id = ?
+            left join sensortype s on s.ID = d.type_ID 
+            left join activity a on a.device_ID = d.ID
+            WHERE d.deviceID = ?
             AND a.data like '%decoded_payload%'
-            ORDER BY a.date DESC;
+            ORDER BY a.dateTime DESC;
         ");
         $stmt->execute($deviceId);
         return $stmt->fetch(PDO::FETCH_ASSOC);

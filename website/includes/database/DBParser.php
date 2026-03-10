@@ -14,10 +14,12 @@ class DBParser {
 
     public function parseDataToDB($json) {
         $stmt = $this->pdo->prepare("
-            INSERT INTO activity (data, date)
-            VALUES (?, NOW())
+            INSERT INTO activity (device_ID, data, dateTime)
+            VALUES (:device_id, :data, NOW())
         ");
-       $stmt->bindParam(1, $json);
+        $num = 1;
+       $stmt->bindParam('device_id', $num, PDO::PARAM_INT);
+       $stmt->bindParam('data', $json, PDO::PARAM_STR);
        $stmt->execute();
     }
     
@@ -25,10 +27,10 @@ class DBParser {
         $devices = $this->definer->getDevices();
         $card_info = [];
         foreach ($devices as $key => $dev) {
-            if ($dev["device_Id"]){
-                $activity = $this->definer->getActivity([$dev["device_Id"]]);
+            if ($dev["deviceID"]){
+                $activity = $this->definer->getActivity([$dev["deviceID"]]);
                 if ($activity && trim($activity["data"]) !== "") {
-                    $card_info[$key]= $this->getSensorType($dev["type_Id"], json_decode($activity["data"]));
+                    $card_info[$key]= $this->getSensorType($dev["type_ID"], json_decode($activity["data"]));
                 }
             }
         }

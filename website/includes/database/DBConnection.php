@@ -4,9 +4,9 @@ class DBConn extends DBConfig
 {
 
     private $host = 'localhost';
-    private $db   = 'smart-datacenter';
-    private $user = 'root';
-    private $pass = '';
+    private $db   = 'smartdatacenter';
+    private $user = 'lars';
+    private $pass = 'pass';
     private $charset = "utf8mb4";
 
     private static $instance = null;
