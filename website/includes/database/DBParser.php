@@ -35,7 +35,7 @@ class DBParser {
             }
         }
         return $card_info;
-}
+    }
                 
     
 
