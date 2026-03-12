@@ -1,6 +1,6 @@
 <?php
-include_once __DIR__ . '/DBConnection.php';
-include_once __DIR__ . '/../Definer.php';
+include_once __DIR__ . '/../Database/DBConnection.php';
+include_once __DIR__ . './Definer.php';
 require_once(__DIR__ . '/../Models/Devices.php');
 
 class DBParser {

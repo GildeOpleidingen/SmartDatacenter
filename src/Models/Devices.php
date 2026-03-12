@@ -1,5 +1,5 @@
 <?php
-require_once(__DIR__ . '/../Definer.php');
+require_once(__DIR__ . '/../Services/Definer.php');
 
 class Sensor extends JsonDeserializer
 {

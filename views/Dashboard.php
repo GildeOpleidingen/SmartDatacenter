@@ -1,6 +1,6 @@
 <?php
-include_once __DIR__ . '/includes/database/DBParser.php';
-include_once __DIR__ . '/includes/Definer.php';
+include_once __DIR__ . '/../src/Services/DBParser.php';
+include_once __DIR__ . '/../src/Services/Definer.php';
 $parser = new DBParser();
 $define = new Definer();
 $deviceCards = $parser->generateCards();
