@@ -1,11 +1,11 @@
 <?php
-    require_once __DIR__ . './../vendor/autoload.php';
+    require_once __DIR__ . '/../vendor/autoload.php';
 
     use App\Routing\Router;
 
     $router = new Router();
 
-    require __DIR__ . './../src/Routing/routes.php';
+    require __DIR__ . '/../src/Routing/routes.php';
 
     $router->dispatch();
 
