@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use PDO;
+use PDOException;
 use App\Database\DBConn;
 
 include_once __DIR__ . '/ParseService.php';
