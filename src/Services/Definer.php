@@ -1,5 +1,10 @@
 <?php
-include_once __DIR__ . '/DBParser.php';
+namespace App\Services;
+
+use PDO;
+use App\Database\DBConn;
+
+include_once __DIR__ . '/ParseService.php';
 include_once __DIR__ . '/../Database/DBConnection.php';
 
 
@@ -209,28 +214,7 @@ class Definer{
 }
 
 
-abstract class JsonDeserializer
-{
-    public static function Deserialize($json)
-    {
-        $className = get_called_class();
-        $classInstance = new $className();
-        if (is_string($json))
-            $json = json_decode($json);
-        foreach ($json as $key => $value)
-            $classInstance->{$key} = $value;
-        return $classInstance;
-    }
 
-    public static function DeserializeArray($json)
-    {
-        $json = json_decode($json);
-        $items = [];
-        foreach ($json as $item)
-            $items[] = self::Deserialize($item);
-        return $items;
-    }
-}
 
 
 ?>

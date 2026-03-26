@@ -1,5 +1,28 @@
 <?php
-require_once(__DIR__ . '/../Services/Definer.php');
+namespace App\Models;
+
+abstract class JsonDeserializer
+{
+    public static function Deserialize($json)
+    {
+        $className = get_called_class();
+        $classInstance = new $className();
+        if (is_string($json))
+            $json = json_decode($json);
+        foreach ($json as $key => $value)
+            $classInstance->{$key} = $value;
+        return $classInstance;
+    }
+
+    public static function DeserializeArray($json)
+    {
+        $json = json_decode($json);
+        $items = [];
+        foreach ($json as $item)
+            $items[] = self::Deserialize($item);
+        return $items;
+    }
+}
 
 class Sensor extends JsonDeserializer
 {
