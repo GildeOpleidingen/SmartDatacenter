@@ -1,12 +1,17 @@
 <?php
-include_once __DIR__ . '/../src/Services/DBParser.php';
-include_once __DIR__ . '/../src/Services/Definer.php';
+
+use App\Services\DBParser;
+use App\Services\Definer;
+
 $parser = new DBParser();
 $define = new Definer();
+
 $deviceCards = $parser->generateCards();
 $fields = $define->getFields();
+
 header("refresh: 5;");
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>

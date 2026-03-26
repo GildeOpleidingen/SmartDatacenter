@@ -1,5 +1,8 @@
 <?php
+namespace App\Database;
 
+use PDO;
+use PDOException;
 use Dotenv\Dotenv;
 
 class DBConn

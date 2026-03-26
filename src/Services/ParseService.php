@@ -1,7 +1,15 @@
 <?php
+namespace App\Services;
+
+use App\Database\DBConn;
+use PDO;
+use App\Models\DoorSensor;
+use App\Models\TempSensor;
+use App\Models\MotionSensor;
+use App\Models\PowerSocket;
 include_once __DIR__ . '/../Database/DBConnection.php';
 include_once __DIR__ . '/Definer.php';
-require_once(__DIR__ . '/../Models/Devices.php');
+require_once(__DIR__ . '/../Models/DeviceModels.php');
 
 class DBParser {
     public $definer;
