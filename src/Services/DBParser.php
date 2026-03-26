@@ -23,46 +23,53 @@ class DBParser {
        $stmt->execute();
     }
     
-    public function generateCards() {
+    public function generateCards()
+    {
         $devices = $this->definer->getDevices();
         $card_info = [];
+
+        if (!is_array($devices)) return [];
         foreach ($devices as $key => $dev) {
-            if ($dev["deviceID"]){
-                $activity = $this->definer->getActivity([$dev["deviceID"]]);
-                if ($activity && trim($activity["data"]) !== "") {
-                    $card_info[$key]= $this->getSensorType($dev["type_ID"], json_decode($activity["data"]));
+
+            if ($dev["deviceID"]) {
+                $activity = $this->definer->getActivity($dev["deviceID"]);
+                if (is_array($activity) && trim($activity["data"]) != "") {
+                    $card = $this->getSensorType($dev["deviceID"], json_decode($activity["data"]));
+
+                    if ($card) {
+                        $card->device_id = $dev["deviceID"];
+                        $card->status = "goed";
+                        array_push($card_info, $card);
+                    }
                 }
             }
         }
         return $card_info;
     }
-                
     
 
-    public function getSensorType($type, $payload) {
+    public function getSensorType($deviceId, $payload) {
         $abstractClass = null;    
-        switch($type){
+        switch($deviceId){
             case "doorSensor":
                 $abstractClass = DoorSensor::Deserialize(json_encode($payload->uplink_message->decoded_payload));
-                $abstractClass->setDeviceId($payload->end_device_ids->device_id);
-                $abstractClass->setSensorType($type);
+
+                $abstractClass->setSensorType($deviceId);
                 break;
-            case "temperatureSensor":
-                $abstractClass = TempSensor::Deserialize(json_encode($payload->uplink_message->decoded_payload));
-                $abstractClass->setDeviceId($payload->end_device_ids->device_id);
-                $abstractClass->setSensorType($type);
+            case "temphumidity-001": // Temperatuur
+                $abstractClass = TempSensor::Deserialize(json_encode($payload));
+                $abstractClass->sensorType = "temperatureSensor";
                 break;
             case "motionSensor":
                 $abstractClass = MotionSensor::Deserialize(json_encode($payload->uplink_message->decoded_payload));
-                $abstractClass->setDeviceId($payload->end_device_ids->device_id);
-                $abstractClass->setSensorType($type);
+                $abstractClass->setSensorType($deviceId);
                 break;
-            case "powerSocket":
-                $abstractClass = PowerSocket::Deserialize(json_encode($payload->uplink_message->decoded_payload));
-                $abstractClass->setDeviceId($payload->end_device_ids->device_id);
-                $abstractClass->setSensorType($type); 
+            case "powersocket-001": // Powersocket
+                $abstractClass = PowerSocket::Deserialize(json_encode($payload));
+                $abstractClass->sensorType = "powerSocket";
                 break;
             }
+
             return $abstractClass;
 
         }
