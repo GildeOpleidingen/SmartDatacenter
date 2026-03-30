@@ -4,10 +4,7 @@ namespace App\Services;
 use PDO;
 use PDOException;
 use App\Database\DBConn;
-
-include_once __DIR__ . '/ParseService.php';
-include_once __DIR__ . '/../Database/DBConnection.php';
-
+use App\Services\DBParser;
 
 class Definer{
     
