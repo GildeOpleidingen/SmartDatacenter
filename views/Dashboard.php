@@ -1,17 +1,3 @@
-<?php
-
-use App\Services\DBParser;
-use App\Services\Definer;
-
-$parser = new DBParser();
-$define = new Definer();
-
-$deviceCards = $parser->generateCards();
-$fields = $define->getFields();
-
-header("refresh: 5;");
-?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -43,7 +29,7 @@ header("refresh: 5;");
                 <div class="inline-grid grid-cols-8 md:grid-cols-2 gap-10">
                     <?php
                     foreach ($deviceCards as $card):
-                        [$borderColor, $statusLabel] = $define->status_color_and_label($card->status);  /* Will implement status later */
+                        [$borderColor, $statusLabel] = $definer->status_color_and_label($card->status);  /* Will implement status later */
                         ?>
                         <div class="flex-row rounded-xl border-2 overflow-hidden p-12" style="border-color: <?= $borderColor ?>"> <!-- card -->
                                 <!-- <div class="text-right">
@@ -53,7 +39,7 @@ header("refresh: 5;");
                                     <div class="w-10 block h-auto">
                                     <?php
                                     //echo $card->DOOR_OPEN_STATUS;
-                                    echo $deviceIcon = $define->getDeviceIcon($card->sensorType, $card->status, isset($card->DOOR_OPEN_STATUS) ? $card->DOOR_OPEN_STATUS : null, isset($card->motion) ? $card->motion : null, isset($card->state) ? $card->state : null);
+                                    echo $deviceIcon = $definer->getDeviceIcon($card->sensorType, $card->status, isset($card->DOOR_OPEN_STATUS) ? $card->DOOR_OPEN_STATUS : null, isset($card->motion) ? $card->motion : null, isset($card->state) ? $card->state : null);
                                     ?>
                                     </div>
                                     <p class="text-lg font-semibold"><?= htmlspecialchars($card->device_id) ?></p>
@@ -61,7 +47,7 @@ header("refresh: 5;");
                                         if ($key === "device_id" || $key === "sensorType" || $key === "button" || $key === "MOD" || $key === "temperature" || $key === "humi" || $key === "status") continue;
                                         ?>
                                         <li class="grid grid-cols-2 gap-1">
-                                            <span class="text-gray-300 text-right"><?= $define->getLabels($key) ?></span>
+                                            <span class="text-gray-300 text-right"><?= $definer->getLabels($key) ?></span>
                                             <span class="font-medium">= <?= htmlspecialchars($value) ?></span>
                                         </li>
                                     <?php endforeach; ?>
