@@ -19,14 +19,17 @@ class DBParser {
         $this->definer = new Definer();
     }
 
-    public function parseDataToDB($json) {
+    public function parseDataToDB($ttn_id, $json) {
+        $payload = json_encode($json);
+
+        $id = $this->getOrCreateDevice($ttn_id);
+
         $stmt = $this->pdo->prepare("
             INSERT INTO activity (device_ID, data, dateTime)
             VALUES (:device_id, :data, NOW())
         ");
-        $num = 1;
-       $stmt->bindParam('device_id', $num, PDO::PARAM_INT);
-       $stmt->bindParam('data', $json, PDO::PARAM_STR);
+       $stmt->bindParam('device_id', $id, PDO::PARAM_INT);
+       $stmt->bindParam('data', $payload, PDO::PARAM_STR);
        $stmt->execute();
     }
     
@@ -52,6 +55,21 @@ class DBParser {
             }
         }
         return $card_info;
+    }
+
+    private function getOrCreateDevice($ttn_id) {
+        $stmt = $this->pdo->prepare("SELECT id FROM device WHERE deviceID = :name LIMIT 1");
+        $stmt->execute([':name' => $ttn_id]);
+        $device = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($device) {
+            return (int) $device['id'];
+        }
+
+        $insertStmt = $this->pdo->prepare("INSERT INTO device (deviceID) VALUES (:name)");
+        $insertStmt->execute([':name' => $ttn_id]);
+
+        return (int) $this->pdo->lastInsertId();
     }
     
 

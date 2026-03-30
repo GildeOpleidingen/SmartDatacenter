@@ -13,10 +13,18 @@ class WebhookController {
             exit(json_last_error_msg());
         }
 
+        $id = $data['end_device_ids']['device_id'] ?? null;
+        $payload = $data['uplink_message']['decoded_payload'] ?? null;
+
         $parser = new DBParser();
-        $parser->parseDataToDB($data);
+        $parser->parseDataToDB($id, $payload);
 
         http_response_code(200);
         echo json_encode(["status" => "received"]);
+    }
+
+    public function status() {
+        http_response_code(200);
+        echo "api healthy";
     }
 }
