@@ -10,6 +10,7 @@ use App\Models\DeviceModels\TempSensor;
 use App\Models\DeviceModels\MotionSensor;
 use App\Models\DeviceModels\PowerSocket;
 use App\Models\DeviceModels\SoundSensor;
+use App\Models\DeviceModels\IndoorAmbienceMonitoringSensor;
 
 class DBParser {
     public $definer;
@@ -20,14 +21,17 @@ class DBParser {
         $this->definer = new Definer();
     }
 
-    public function parseDataToDB($json) {
+    public function parseDataToDB($ttn_id, $json) {
+        $payload = json_encode($json);
+
+        $id = $this->getOrCreateDevice($ttn_id);
+
         $stmt = $this->pdo->prepare("
             INSERT INTO activity (device_ID, data, dateTime)
             VALUES (:device_id, :data, NOW())
         ");
-        $num = 1;
-       $stmt->bindParam('device_id', $num, PDO::PARAM_INT);
-       $stmt->bindParam('data', $json, PDO::PARAM_STR);
+       $stmt->bindParam('device_id', $id, PDO::PARAM_INT);
+       $stmt->bindParam('data', $payload, PDO::PARAM_STR);
        $stmt->execute();
     }
     
@@ -54,17 +58,30 @@ class DBParser {
         }
         return $card_info;
     }
-    
+
+    private function getOrCreateDevice($ttn_id) {
+        $stmt = $this->pdo->prepare("SELECT id FROM device WHERE deviceID = :name LIMIT 1");
+        $stmt->execute([':name' => $ttn_id]);
+        $device = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($device) {
+            return (int) $device['id'];
+        }
+
+        $insertStmt = $this->pdo->prepare("INSERT INTO device (deviceID) VALUES (:name)");
+        $insertStmt->execute([':name' => $ttn_id]);
+
+        return (int) $this->pdo->lastInsertId();
+    }  
 
     public function getSensorType($deviceId, $payload) {
         $deviceArray = explode("-", $deviceId);
         $type = strtolower($deviceArray[0]);
 
-
         $abstractClass = null;    
         switch($type){
             case "deursensor":
-                $abstracsoundlevelsensortClass = DoorSensor::Deserialize(json_encode($payload->uplink_message->decoded_payload));
+                $abstractClass = DoorSensor::Deserialize(json_encode($payload->uplink_message->decoded_payload));
                 $abstractClass->setSensorType($deviceId);
                 break;
             case "temphumidity": // Temperatuur
