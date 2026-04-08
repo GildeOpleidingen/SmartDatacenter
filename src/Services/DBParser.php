@@ -9,6 +9,7 @@ use App\Models\DeviceModels\DoorSensor;
 use App\Models\DeviceModels\TempSensor;
 use App\Models\DeviceModels\MotionSensor;
 use App\Models\DeviceModels\PowerSocket;
+use App\Models\DeviceModels\SoundSensor;
 
 class DBParser {
     public $definer;
@@ -56,24 +57,35 @@ class DBParser {
     
 
     public function getSensorType($deviceId, $payload) {
-        $abstractClass = null;    
-        switch($deviceId){
-            case "doorSensor":
-                $abstractClass = DoorSensor::Deserialize(json_encode($payload->uplink_message->decoded_payload));
+        $deviceArray = explode("-", $deviceId);
+        $type = strtolower($deviceArray[0]);
 
+
+        $abstractClass = null;    
+        switch($type){
+            case "deursensor":
+                $abstracsoundlevelsensortClass = DoorSensor::Deserialize(json_encode($payload->uplink_message->decoded_payload));
                 $abstractClass->setSensorType($deviceId);
                 break;
-            case "temphumidity-001": // Temperatuur
+            case "temphumidity": // Temperatuur
                 $abstractClass = TempSensor::Deserialize(json_encode($payload));
                 $abstractClass->sensorType = "temperatureSensor";
                 break;
-            case "motionSensor":
+            case "motionsensor":
                 $abstractClass = MotionSensor::Deserialize(json_encode($payload->uplink_message->decoded_payload));
                 $abstractClass->setSensorType($deviceId);
                 break;
-            case "powersocket-001": // Powersocket
+            case "powersocket": // Powersocket
                 $abstractClass = PowerSocket::Deserialize(json_encode($payload));
                 $abstractClass->sensorType = "powerSocket";
+                break;
+            case "soundlevelsensor":
+                $abstractClass = SoundSensor::Deserialize(json_encode($payload->uplink_message->decoded_payload));
+                $abstractClass->setSensorType($deviceId);
+                break;
+            case "indoorambiencemonitoringsensor":
+                $abstractClass = IndoorAmbienceMonitoringSensor::Deserialize(json_encode($payload->uplink_message->decoded_payload));
+                $abstractClass->setSensorType($deviceId);
                 break;
             }
 
