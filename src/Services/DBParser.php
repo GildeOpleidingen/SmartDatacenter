@@ -10,6 +10,7 @@ use App\Models\DeviceModels\TempSensor;
 use App\Models\DeviceModels\MotionSensor;
 use App\Models\DeviceModels\PowerSocket;
 use App\Models\DeviceModels\SoundSensor;
+use App\Models\DeviceModels\IndoorAmbienceMonitoringSensor;
 
 class DBParser {
     public $definer;
@@ -71,18 +72,16 @@ class DBParser {
         $insertStmt->execute([':name' => $ttn_id]);
 
         return (int) $this->pdo->lastInsertId();
-    }
-    
+    }  
 
     public function getSensorType($deviceId, $payload) {
         $deviceArray = explode("-", $deviceId);
         $type = strtolower($deviceArray[0]);
 
-
         $abstractClass = null;    
         switch($type){
             case "deursensor":
-                $abstracsoundlevelsensortClass = DoorSensor::Deserialize(json_encode($payload->uplink_message->decoded_payload));
+                $abstractClass = DoorSensor::Deserialize(json_encode($payload->uplink_message->decoded_payload));
                 $abstractClass->setSensorType($deviceId);
                 break;
             case "temphumidity": // Temperatuur
