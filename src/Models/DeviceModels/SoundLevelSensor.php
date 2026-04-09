@@ -3,7 +3,7 @@ namespace App\Models\DeviceModels;
 
 use App\Models\Sensor;
 
-class SoundSensor extends Sensor {
+class SoundLevelSensor extends Sensor {
 
     public $battery;
 

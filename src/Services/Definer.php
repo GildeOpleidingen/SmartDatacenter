@@ -128,36 +128,26 @@ class Definer{
         return $log->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getDeviceIcon($sensorType, $status, $DoorState, $motion, $powerState){
+    public function getDeviceIcon($sensorType, $status, $doorState, $motion, $powerState){
 
-        switch($status){
-            case 'Warning':
-                $path = "/img/sensors/{$sensorType}/" . ucfirst($sensorType) . "Warning.svg";
-                break;
-            case 'Error':
-                $path = "/img/sensors/{$sensorType}/" . ucfirst($sensorType) . "Error.svg";
-                break;
-            case 'Good':
-            default:
-                switch ($sensorType) {
-                    case 'powerSocket':
-                        $path = ($powerState == 'open') ? '/img/sensors/powerSocket/PowerSocketOn.svg' : '/img/sensors/powerSocket/PowerSocketOff.svg';
-                        break;
-                    case 'temperatureSensor':
-                        $path = '/img/sensors/temperatureSensor/TemperatureGood.svg';
-                        break;
-                    case 'motionSensor':
-                        $path = ($motion == 1) ? '/img/sensors/motionSensor/MotionSensorDetected.svg' : '/img/sensors/motionSensor/MotionSensorIdle.svg';
-                        break;
-                    case 'doorSensor':
-                        $path = ($DoorState == 1) ? '/img/sensors/doorSensoropenicon.svg' : '/img/sensors/doorSensorclosedicon.svg';
-                        break;
-                }
-                break;
+        if (in_array($status, ['Warning', 'Error'])) {
+            $stateName = $status;
+        } else {
+            $stateName = match ($sensorType) {
+                'powerSocket'                       => ($powerState === 'open')     ? 'On' : 'Off',
+                'motionSensor'                      => ($motion == 1)               ? 'Detected' : 'Idle',
+                'doorSensor'                        => ($doorState == 1)            ? 'Open' : 'Closed',
+                'temperatureSensor'                 => 'Good',
+                'indoorAmbienceMonitoringSensor'    => 'Good', 
+                default                             => 'Default',
+            };
         }
+
+        $fileName = ucfirst($sensorType) . ucfirst($stateName) . ".svg";
+        $path = "/img/sensors/{$sensorType}/{$fileName}";
+        
         return "<img src=\"$path\" width=\"64px\" class=\"ml-auto\">";
     }
-
 }
 
 

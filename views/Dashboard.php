@@ -39,7 +39,7 @@
                                     <div class="w-10 block h-auto">
                                     <?php
                                     //echo $card->DOOR_OPEN_STATUS;
-                                    echo $deviceIcon = $definer->getDeviceIcon($card->sensorType, $card->status, isset($card->DOOR_OPEN_STATUS) ? $card->DOOR_OPEN_STATUS : null, isset($card->motion) ? $card->motion : null, isset($card->state) ? $card->state : null);
+                                    echo $deviceIcon = $definer->getDeviceIcon($card->sensorType, $card->status, isset($card->DOOR_OPEN_STATUS) ? $card->DOOR_OPEN_STATUS : null, isset($card->motion) ? $card->motion : null, isset($card->state) ? $card->state : null) ?? "<img src='/img/sensors/default/GildeDataCenterIconGood.svg' width=\"64px\" class=\"ml-auto\">";
                                     ?>
                                     </div>
                                     <p class="text-lg font-semibold"><?= htmlspecialchars($card->device_id) ?></p>
