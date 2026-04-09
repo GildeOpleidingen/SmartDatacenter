@@ -22,6 +22,8 @@ class DBParser {
     }
 
     public function parseDataToDB($ttn_id, $json) {
+        if (empty($json) || !$json) return;
+        
         $payload = json_encode($json);
 
         $id = $this->getOrCreateDevice($ttn_id);
