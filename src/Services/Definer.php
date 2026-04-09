@@ -1,7 +1,10 @@
 <?php
-include_once __DIR__ . '/DBParser.php';
-include_once __DIR__ . '/../Database/DBConnection.php';
+namespace App\Services;
 
+use PDO;
+use PDOException;
+use App\Database\DBConn;
+use App\Services\DBParser;
 
 class Definer{
     
@@ -100,15 +103,18 @@ class Definer{
 
     public function getActivity($deviceId) {
         $stmt = $this->pdo->prepare("
-            SELECT d.deviceID, a.data, a.dateTime, s.ID
-            FROM device d
-            left join sensortype s on s.ID = d.type_ID 
-            left join activity a on a.device_ID = d.ID
-            WHERE d.deviceID = ?
-            AND a.data like '%decoded_payload%'
-            ORDER BY a.dateTime DESC;
-        ");
-        $stmt->execute($deviceId);
+        SELECT a.data, a.dateTime
+              FROM activity a
+              JOIN device d ON a.device_ID = d.ID
+              WHERE d.deviceID = :deviceId
+              ORDER BY a.dateTime DESC
+              LIMIT 1
+    ");
+        $stmt->bindParam('deviceId', $deviceId);
+        if (!$stmt->execute()) {
+            throw new PDOException();
+        }
+
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -119,118 +125,33 @@ class Definer{
             WHERE device_Id = ?
             ORDER BY date DESC LIMIT 1
         ");
+        return $log->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getDeviceIcon($sensorType, $status, $DoorState, $motion, $powerState){
-        //$sensorType = "beaver"; // test placeholder image for new devices
-        switch($status){
-            case 'Warning':    
-                switch ($sensorType) {
-                    case 'doorSensor':
-                        $path = 'src/img/sensors/sensors/doorSensor/DoorSensorWarning.svg';
-                        break;
-                    case 'temperatureSensor':
-                        $path = 'src/img/sensors/temperatureSensor/TemperatureWarning.svg';
-                        break;
-                    case 'motionSensor':
-                        $path = 'src/img/sensors/motionSensor/MotionSensorWarning.svg';
-                        break;
-                    case 'powerSocket':
-                        $path = 'src/img/sensors/powerSocket/PowerSocketWarning.svg';
-                        break;
-                    default:
-                        $path = 'src/img/sensors/default/GildeDataCenterIconWarning.svg';
-                        break;
-                }
-                break;
-            case 'Error':
-                switch ($sensorType) {
-                    case 'doorSensor':
-                        $path = 'src/img/sensors/doorSensor/DoorSensorError.svg';
-                        break;
-                    case 'temperatureSensor':
-                        $path = 'src/img/sensors/temperatureSensor/TemperatureError.svg';
-                        break;
-                    case 'motionSensor':
-                        $path = 'src/img/sensors/motionSensor/MotionSensorError.svg';
-                        break;
-                    case 'powerSocket':
-                        $path = 'src/img/sensors/powerSocket/PowerSocketError.svg';
-                        break;
-                    default:
-                        $path = 'src/img/sensors/default/GildeDataCenterIconError.svg';
-                        break;
-                }
-                break;
-            case 'Good':
-                switch ($sensorType) {
-                    case 'doorSensor':
-                        switch ($DoorState) {
-                            case 1:
-                                $path = 'src/img/sensors/doorsensoropenicon.svg';
-                                break;
-                            case 0:
-                                $path = 'src/img/sensors/doorsensorclosedicon.svg';
-                                break;
-                        }
-                        break;
-                    case 'temperatureSensor':
-                        $path = 'src/img/sensors/temperatureSensor/TemperatureGood.svg';
-                        break;
-                    case 'motionSensor':
-                        switch ($motion) {
-                            case 1:
-                                $path = 'src/img/sensors/motionSensor/MotionSensorDetected.svg';
-                                break;
-                            case 0:
-                                $path = 'src/img/sensors/motionSensor/MotionSensorIdle.svg';
-                                break;
-                        }
-                        break;
-                    case 'powerSocket':
-                        switch ($powerState) {
-                            case 'open':
-                                $path = 'src/img/sensors/powerSocket/PowerSocketOn.svg';
-                                break;
-                            case 'close':
-                                $path = 'src/img/sensors/powerSocket/PowerSocketOff.svg';
-                                break;
-                        }
-                        break;
-                    default:
-                        $path = 'src/img/sensors/default/GildeDataCenterIconGood.svg';
-                        break;
-                }
+    public function getDeviceIcon($sensorType, $status, $doorState, $motion, $powerState){
+
+        if (in_array($status, ['Warning', 'Error'])) {
+            $stateName = $status;
+        } else {
+            $stateName = match ($sensorType) {
+                'powerSocket'                       => ($powerState === 'open')     ? 'On' : 'Off',
+                'motionSensor'                      => ($motion == 1)               ? 'Detected' : 'Idle',
+                'doorSensor'                        => ($doorState == 1)            ? 'Open' : 'Closed',
+                'temperatureSensor'                 => 'Good',
+                'indoorAmbienceMonitoringSensor'    => 'Good', 
+                default                             => 'Default',
+            };
         }
+
+        $fileName = ucfirst($sensorType) . ucfirst($stateName) . ".svg";
+        $path = "/img/sensors/{$sensorType}/{$fileName}";
+        
         return "<img src=\"$path\" width=\"64px\" class=\"ml-auto\">";
     }
-
-
 }
 
 
-abstract class JsonDeserializer
-{
-    public static function Deserialize($json)
-    {
-        $className = get_called_class();
-        $classInstance = new $className();
-        if (is_string($json))
-            $json = json_decode($json);
-        foreach ($json as $key => $value)
-            $classInstance->{$key} = $value;
-        return $classInstance;
-    }
 
-    public static function DeserializeArray($json)
-    {
-        $json = json_decode($json);
-        $items = [];
-        foreach ($json as $item)
-            $items[] = self::Deserialize($item);
-        return $items;
-    }
-}
 
 
 ?>

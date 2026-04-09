@@ -1,12 +1,3 @@
-<?php
-include_once __DIR__ . '/../src/Services/DBParser.php';
-include_once __DIR__ . '/../src/Services/Definer.php';
-$parser = new DBParser();
-$define = new Definer();
-$deviceCards = $parser->generateCards();
-$fields = $define->getFields();
-header("refresh: 5;");
-?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -21,49 +12,46 @@ header("refresh: 5;");
 </head>
 <body class="text-white p-10">
 <div class="body_wrapper">
-    <div class="main_navigation"></div>
-    <div class="main_wrapper">
+    <div class="main_navigation">
         <section>
-            <div class="container">
-                <!-- Header -->
-                <div class="flex flex-col mb-10">
-                    <img src="/img/GildeLogoDatacenter.svg" width="250px" class="mb-7">
-                    <div class="flex-1 ml-6 border-t border-gray-500"></div>
+                <div class="container">
+                     <!-- Header -->
+                     <div class="flex flex-col mb-10">
+                     </div><img src="/img/GildeLogoDatacenter.svg" width="250px" class="mb-7">
+                     <div class="flex-1 ml-6 border-t border-gray-500"></div>
                 </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-
-                    <?php foreach ($deviceCards as $card):
-                        [$borderColor, $statusLabel] = $define->status_color_and_label($card->status);  /* Will implement status later */
+            </section>
+    </div>
+    <div class="main_wrapper">
+        <section style="padding: 120px">
+            <div class="max-w-screen-xl container">
+              <!--  <div class="grid grid-cols-8 md:grid-cols-2 gap-10 max-w-fit"> -->
+                <div class="inline-grid grid-cols-8 md:grid-cols-2 gap-10">
+                    <?php
+                    foreach ($deviceCards as $card):
+                        [$borderColor, $statusLabel] = $definer->status_color_and_label($card->status);  /* Will implement status later */
                         ?>
-                        <div class="bg-[#001] p-6 rounded-2xl border-2" style="border-color: <?= $borderColor ?>">
-                            <div class="flex justify-between">
-                                <div class="flex items-center">
-                                    <span class="card-dot mr-2"></span>
-                                    <span class="text-lg font-semibold"><?= htmlspecialchars($card->device_id) ?></span>
-                                </div>
-                                <div class="text-right">
-                                    <!--div class="font-semibold"><//?= $statusLabel ?></div-->
-                                </div>
-                            </div>
-
-                            <div class="mt-4 text-sm flex">
-                                <ul class="space-y-1">
+                        <div class="flex-row rounded-xl border-2 overflow-hidden p-12" style="border-color: <?= $borderColor ?>"> <!-- card -->
+                                <!-- <div class="text-right">
+                                    div class="font-semibold"><//?= $statusLabel ?></div
+                                </div> -->
+                                <ul class="flex flex-col items-center justify-center bg-[#001] overflow-hidden"> <!-- card-inner -->
+                                    <div class="w-10 block h-auto">
+                                    <?php
+                                    //echo $card->DOOR_OPEN_STATUS;
+                                    echo $deviceIcon = $definer->getDeviceIcon($card->sensorType, $card->status, isset($card->DOOR_OPEN_STATUS) ? $card->DOOR_OPEN_STATUS : null, isset($card->motion) ? $card->motion : null, isset($card->state) ? $card->state : null) ?? "<img src='/img/sensors/default/GildeDataCenterIconGood.svg' width=\"64px\" class=\"ml-auto\">";
+                                    ?>
+                                    </div>
+                                    <p class="text-lg font-semibold"><?= htmlspecialchars($card->device_id) ?></p>
                                     <?php foreach ($card as $key => $value):
                                         if ($key === "device_id" || $key === "sensorType" || $key === "button" || $key === "MOD" || $key === "temperature" || $key === "humi" || $key === "status") continue;
                                         ?>
                                         <li class="grid grid-cols-2 gap-1">
-                                            <span class="text-gray-300 text-right"><?= $define->getLabels($key) ?></span>
+                                            <span class="text-gray-300 text-right"><?= $definer->getLabels($key) ?></span>
                                             <span class="font-medium">= <?= htmlspecialchars($value) ?></span>
                                         </li>
                                     <?php endforeach; ?>
                                 </ul>
-                                <?php
-                                //echo $card->DOOR_OPEN_STATUS;
-                                echo $deviceIcon = $define->getDeviceIcon($card->sensorType, $card->status, isset($card->DOOR_OPEN_STATUS) ? $card->DOOR_OPEN_STATUS : null, isset($card->motion) ? $card->motion : null, isset($card->state) ? $card->state : null);
-                                ?>
-
-                            </div>
 
                             <!-- Updated -->
                             <div class="text-right text-gray-400 text-sm mt-4">
@@ -72,7 +60,6 @@ header("refresh: 5;");
 
                         </div>
                     <?php endforeach; ?>
-
                 </div>
 
             </div>

@@ -10,6 +10,6 @@ $router->get('/dashboard', DashboardController::class, 'index');
 // API ROUTES
 $router->get('/api/status', WebhookController::class, 'status');
 
-$router->post('/api/webhooks/ttn', WebhookController::class, 'handle');
+$router->post('/api/webhook/ttn', WebhookController::class, 'handle');
 
 $router->post('/api/downlink/light', WebhookController::class, 'busylight');
