@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="14d33c72-9d24-4cd7-ad46-f412ab16cb33" name="SmartDatacenter" url="http://localhost:8000">
+        <fileTransfer mountedRoot="$USER_HOME$/Sites/SmartDatacenter" accessType="MOUNT" port="0" />
+      </webServer>
+    </option>
+  </component>
+</project>
