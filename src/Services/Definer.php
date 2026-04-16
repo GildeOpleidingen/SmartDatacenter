@@ -145,6 +145,12 @@ class Definer{
 
         $fileName = ucfirst($sensorType) . ucfirst($stateName) . ".svg";
         $path = "/img/sensors/{$sensorType}/{$fileName}";
+
+        $systemPath = $_SERVER['DOCUMENT_ROOT'] . $path;
+
+        if (!file_exists($systemPath)) {
+            $path = "/img/sensors/default/GildeDataCenterIconGood.svg";
+        }
         
         return "<img src=\"$path\" width=\"64px\" class=\"ml-auto\">";
     }
