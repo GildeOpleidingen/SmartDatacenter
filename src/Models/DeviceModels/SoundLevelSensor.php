@@ -12,4 +12,8 @@ class SoundLevelSensor extends Sensor {
     public $laeq;
 
     public $lamax;
+
+    public $freq_weight;
+
+    public $time_weight;
 }

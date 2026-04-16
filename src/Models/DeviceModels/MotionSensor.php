@@ -16,4 +16,8 @@ class MotionSensor extends Sensor
     public $tamper;
 
     public $time;
+
+    public $humi;
+
+    public $temperature;
 }
