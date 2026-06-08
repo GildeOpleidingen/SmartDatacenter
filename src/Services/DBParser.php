@@ -23,7 +23,7 @@ class DBParser {
 
     public function parseDataToDB($ttn_id, $json) {
         if (empty($json) || !$json) return;
-        
+
         $payload = json_encode($json);
 
         $id = $this->getOrCreateDevice($ttn_id);
@@ -32,11 +32,11 @@ class DBParser {
             INSERT INTO activity (device_ID, data, dateTime)
             VALUES (:device_id, :data, NOW())
         ");
-       $stmt->bindParam('device_id', $id, PDO::PARAM_INT);
-       $stmt->bindParam('data', $payload, PDO::PARAM_STR);
-       $stmt->execute();
+        $stmt->bindParam('device_id', $id, PDO::PARAM_INT);
+        $stmt->bindParam('data', $payload, PDO::PARAM_STR);
+        $stmt->execute();
     }
-    
+
     public function generateCards()
     {
         $devices = $this->definer->getDevices();
@@ -52,7 +52,10 @@ class DBParser {
 
                     if ($card) {
                         $card->device_id = $dev["deviceID"];
-                        $card->status = "goed";
+
+                        // Roept de dynamische statusbepaling aan
+                        $card->status = $this->determineStatus($card);
+
                         array_push($card_info, $card);
                     }
                 }
@@ -74,7 +77,7 @@ class DBParser {
         $insertStmt->execute([':name' => $ttn_id]);
 
         return (int) $this->pdo->lastInsertId();
-    }  
+    }
 
     public function getSensorType($deviceId, $payload) {
         $deviceArray = explode("-", $deviceId);
@@ -106,22 +109,86 @@ class DBParser {
                 $abstractClass = IndoorAmbienceMonitoringSensor::Deserialize(json_encode($payload));
                 $abstractClass->setSensorType("indoorAmbienceMonitoringSensor");
                 break;
-            }
-
-            return $abstractClass;
-
         }
-        // log
-        // $getLog->execute([$dev["device_Id"]]);
-        // $log = $getLog->fetch();
-        // $status = $log["status"] ?? "Good";
 
-        // $device_cards[] = [
-        //     "device_Id" => $dev["device_Id"],
-        //     "type" => $dev["type_Id"],
-        //     "payload" => $payload,
-        //     "last_update" => $activity["date"] ?? null,
-        //     "status" => $status
-        // ];
-    
+        return $abstractClass;
+    }
+
+    /**
+     * Bepaalt de status van de sensor.
+     * Retouneert exact 'Warning', 'Error' of 'Operational' zodat de SVG-bestanden matchen.
+     */
+    private function determineStatus($card) {
+        // Standaard status (Groen en Operational)
+        $status = "Operational";
+
+        switch($card->sensorType) {
+            case "temperatureSensor":
+                // Pas hier de temperatuur drempelwaarden aan
+                $warningTemp = 28;
+                $errorTemp = 30;
+
+                // Haal de waarde op uit TempC_SHT (of TempC_DS indien gewenst)
+                $currentTemp = $card->TempC_SHT ?? 0;
+
+                if ($currentTemp >= $errorTemp) {
+                    $status = "Warning"; // Geeft een Rode border en pakt TemperatureSensorWarning.svg
+                } elseif ($currentTemp >= $warningTemp) {
+                    $status = "Error";   // Geeft een Oranje border en pakt TemperatureSensorError.svg
+                }
+                break;
+
+            case "doorSensor":
+                // Pas hier het maximaal aantal seconden aan dat een deur open mag staan
+                $maxOpenSeconds = 30;
+
+                if (isset($card->DOOR_OPEN_STATUS) && $card->DOOR_OPEN_STATUS == 1) {
+                    $status = "Error"; // Deur open (Oranje border)
+
+                    if (isset($card->LAST_DOOR_OPEN_DURATION) && $card->LAST_DOOR_OPEN_DURATION >= $maxOpenSeconds) {
+                        $status = "Warning"; // Te lang open (Rode border)
+                    }
+                }
+                break;
+
+            case "motionSensor":
+                // Als er beweging gedetecteerd is (1), stuur status naar Oranje
+                if (isset($card->motion) && $card->motion == 1) {
+                    $status = "Error"; // Pakt MotionSensorError.svg en geeft oranje border
+                }
+                break;
+
+            case "powerSocket":
+                // Pas hier het basis-wattage en de percentages aan (1.10 = +10%, 1.15 = +15%)
+                $basePower = 100;
+                $warningThreshold = 1.10;
+                $errorThreshold = 1.15;
+
+                if (isset($card->power)) {
+                    $percentage = $card->power / $basePower;
+                    if ($percentage >= $errorThreshold) {
+                        $status = "Warning"; // Rood
+                    } elseif ($percentage >= $warningThreshold) {
+                        $status = "Error";   // Oranje
+                    }
+                }
+                break;
+        }
+
+        return $status;
+    }
+
+    // log
+    // $getLog->execute([$dev["device_Id"]]);
+    // $log = $getLog->fetch();
+    // $status = $log["status"] ?? "Good";
+
+    // $device_cards[] = [
+    //     "device_Id" => $dev["device_Id"],
+    //     "type" => $dev["type_Id"],
+    //     "payload" => $payload,
+    //     "last_update" => $activity["date"] ?? null,
+    //     "status" => $status
+    // ];
+
 }
