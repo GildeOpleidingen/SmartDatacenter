@@ -2,6 +2,9 @@
 namespace App\Controllers;
 
 use App\Services\DBParser;
+use App\Services\DownlinkService;
+
+use Dotenv\Dotenv;
 
 class WebhookController {
     public function handle() {
@@ -26,5 +29,10 @@ class WebhookController {
     public function status() {
         http_response_code(200);
         echo "api healthy";
+    }
+
+    public function busylight() {
+        $result = DownlinkService::busylight(0, 255, 0, 10, 0);
+        echo json_encode($result);
     }
 }
