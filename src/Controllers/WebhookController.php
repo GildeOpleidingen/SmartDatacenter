@@ -31,8 +31,20 @@ class WebhookController {
         echo "api healthy";
     }
 
-    public function busylight() {
+    public function busylightGood() {
         $result = DownlinkService::busylight(0, 255, 0, 10, 0);
         echo json_encode($result);
     }
+
+    public function busylightWarning() {
+        $result = DownlinkService::busylight(255, 160, 0, 10, 0);
+        echo json_encode($result);
+    }
+
+    public function busylightAlert() {
+        $result = DownlinkService::busylight(255, 0, 0, 10, 10);
+        echo json_encode($result);
+    }
+
+
 }
