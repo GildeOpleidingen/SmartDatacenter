@@ -4,7 +4,6 @@ namespace App\Services;
 use App\Database\DBConn;
 use App\Services\Definer;
 use PDO;
-use App\Models\Sensor;
 use App\Models\DeviceModels\DoorSensor;
 use App\Models\DeviceModels\TempSensor;
 use App\Models\DeviceModels\MotionSensor;
@@ -110,18 +109,5 @@ class DBParser {
 
             return $abstractClass;
 
-        }
-        // log
-        // $getLog->execute([$dev["device_Id"]]);
-        // $log = $getLog->fetch();
-        // $status = $log["status"] ?? "Good";
-
-        // $device_cards[] = [
-        //     "device_Id" => $dev["device_Id"],
-        //     "type" => $dev["type_Id"],
-        //     "payload" => $payload,
-        //     "last_update" => $activity["date"] ?? null,
-        //     "status" => $status
-        // ];
-    
+        }    
 }

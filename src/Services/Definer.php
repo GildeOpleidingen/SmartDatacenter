@@ -4,7 +4,6 @@ namespace App\Services;
 use PDO;
 use PDOException;
 use App\Database\DBConn;
-use App\Services\DBParser;
 
 class Definer{
     

@@ -11,7 +11,3 @@ $router->get('/dashboard', DashboardController::class, 'index');
 $router->get('/api/status', WebhookController::class, 'status');
 
 $router->post('/api/webhook/ttn', WebhookController::class, 'handle');
-
-$router->post('/api/downlink/busylight/good', WebhookController::class, 'busylightGood');
-$router->post('/api/downlink/busylight/warning', WebhookController::class, 'busylightWarning');
-$router->post('/api/downlink/busylight/alert', WebhookController::class, 'busylightAlert');
