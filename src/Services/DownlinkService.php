@@ -5,8 +5,6 @@ use Dotenv\Dotenv;
 
 class DownlinkService {
     public static function busylight(int $r, int $g, int $b, int $on, int $off) {
-        $url = "https://eu1.cloud.thethings.network/api/v3/as/applications/gilde-datacenter/devices/busylight-001/down/replace";
-
         $data = [
             "downlinks" => [
                 [
@@ -36,9 +34,10 @@ class DownlinkService {
 
         $context = stream_context_create($options);
 
-        $response = file_get_contents($url, false, $context);
+        $response = file_get_contents($_ENV['TTN_DOWNLINK_URL'], false, $context);
 
         return [
+            'success' => preg_match('/HTTP\/\S+\s+2\d\d/', $http_response_header[0] ?? '') === 1,
             'response' => $response,
             'headers' => $http_response_header ?? []
         ];

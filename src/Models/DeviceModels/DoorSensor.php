@@ -22,7 +22,7 @@ class DoorSensor extends Sensor
     public static function getLatestActivity() {
         $db = DBConn::getInstance();
         
-        $sql = "SELECT * FROM activity WHERE device_ID = 5 LIMIT 1;";
+        $sql = "SELECT * FROM activity WHERE device_ID = 5 ORDER BY dateTime DESC LIMIT 1;";
         
         $stmt = $db->prepare($sql);
 
