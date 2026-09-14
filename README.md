@@ -18,18 +18,25 @@ ngrok: https://dashboard.ngrok.com/get-started/gateway
 
 stap 2. 
 Your_Authoken kan je vinden in
+
 https://dashboard.ngrok.com/get-started/your-authtoken
 
 strap 3 moet je command
+
 ngrok http 127.0.0.1:80 --host-header=smartdatacenter --url=https://zit-matchbook-bloomers.ngrok-free.dev 
 
 cloud.thethings -> naar GildeDataCenter -> Webhooks
+
 add webhooks 
+
 - url https://zit-matchbook-bloomers.ngrok-free.dev/
   
 add filter event data
+
 -end_deivce_ids
+
 -up.downlink_ack.decoded_payload
+
 -up.uplink_message.settings.timestamp
 
 enabled event types
