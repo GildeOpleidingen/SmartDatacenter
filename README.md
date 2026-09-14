@@ -15,8 +15,12 @@ wachtwoord: HvV7tRqxM9nB17.W
 
 Ngrok (link)
 ngrok: https://dashboard.ngrok.com/get-started/gateway 
-stap 2. ngrok config add-authtoken smartdatacenter
-strap 3 moet je command ngrok http 127.0.0.1:80 --host-header=smartdatacenter --url=https://zit-matchbook-bloomers.ngrok-free.dev 
+
+stap 2. 
+ngrok config add-authtoken smartdatacenter
+
+strap 3 moet je command
+ngrok http 127.0.0.1:80 --host-header=smartdatacenter --url=https://zit-matchbook-bloomers.ngrok-free.dev 
 
 cloud.thethings -> naar GildeDataCenter -> Webhooks
 add webhooks 
