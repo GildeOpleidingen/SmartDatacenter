@@ -17,7 +17,8 @@ Ngrok (link)
 ngrok: https://dashboard.ngrok.com/get-started/gateway 
 
 stap 2. 
-ngrok config add-authtoken smartdatacenter
+Your_Authoken kan je vinden in
+https://dashboard.ngrok.com/get-started/your-authtoken
 
 strap 3 moet je command
 ngrok http 127.0.0.1:80 --host-header=smartdatacenter --url=https://zit-matchbook-bloomers.ngrok-free.dev 
