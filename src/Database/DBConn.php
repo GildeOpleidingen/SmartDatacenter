@@ -18,9 +18,9 @@ class DBConn
         $db = $_ENV['DB_NAME'];
         $user = $_ENV['DB_USER'];
         $pass = $_ENV['DB_PASS'];
-        $charset = $_ENV['DB_CHARSET'];
+        //$charset = $_ENV['DB_CHARSET'];
 
-        $hnc = "mysql:host={$host};dbname={$db};charset={$charset}";
+        $hnc = "mysql:host={$host};dbname={$db};";
 
         $options = [
             PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION, // throw an exception when an error occurs
