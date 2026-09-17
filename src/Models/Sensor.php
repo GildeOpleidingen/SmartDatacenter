@@ -24,6 +24,8 @@ abstract class JsonDeserializer
     }
 }
 
+namespace App\Models;
+
 class Sensor extends JsonDeserializer
 {
     public $device_id;
@@ -41,63 +43,4 @@ class Sensor extends JsonDeserializer
     }
     
 
-}
-
-class DoorSensor extends Sensor
-{
-    public $ALARM;
-    
-    public $BAT_V;
-    
-    public $DOOR_OPEN_STATUS;
-    
-    public $DOOR_OPEN_TIMES;
-
-    public $LAST_DOOR_OPEN_DURATION;
-
-    public $MOD;
-}
-
-class MotionSensor extends Sensor
-{
-    public $battery_volt;
-    
-    public $button;
-    
-    public $count;
-    
-    public $motion;
-
-    public $tamper;
-
-    public $time;
-}
-
-class PowerSocket extends Sensor
-{
-    public $current;
-    
-    public $factor;
-    
-    public $power;
-    
-    public $power_sum;
-
-    public $state;
-
-    public $voltage;
-}
-
-
-class TempSensor extends Sensor
-{
-    public $Ext;
-    
-    public $Hum_SHT;
-    
-    public $Systimestamp;
-    
-    public $TempC_DS;
-
-    public $TempC_SHT;
 }
