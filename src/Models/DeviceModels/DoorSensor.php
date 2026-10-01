@@ -30,4 +30,23 @@ class DoorSensor extends Sensor
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-}
+        public function getDoorState() {
+            $latestActivity = DoorSensor::getLatestActivity();
+            $data = json_decode($latestActivity['data'], true);
+        
+            echo "Door payload: ";
+            print_r($data);
+            echo PHP_EOL;
+        
+            $status = $data['DOOR_OPEN_STATUS'] ?? 'missing';
+            echo "DOOR_OPEN_STATUS = " . $status . PHP_EOL;
+        
+            if ($status == 0) {
+                echo "Door is CLOSED" . PHP_EOL;
+                return 0;
+            }
+        
+            echo "Door is OPEN" . PHP_EOL;
+            
+        }
+    }
