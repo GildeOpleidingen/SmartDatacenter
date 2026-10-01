@@ -88,3 +88,5 @@ add filter event data
 
 enabled event types
 vink uplink message /api/webhook/ttn
+
+
