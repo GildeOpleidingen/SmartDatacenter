@@ -34,30 +34,40 @@ class DeviceStateService {
     public function updateBusylight() {
         $doorStatus = $this->getDoorState();
         
+        error_log("Door status: " . $doorStatus);
+        
         $bl = new Busylight();
         $currentColor = $bl->getCurrentColor();
 
-        if ($currentColor['state'] == $doorStatus) {
+        error_log("Current color: " . json_encode($currentColor));
+
+        if ($currentColor && $currentColor['state'] == $doorStatus) {
+            error_log("Door state unchanged, skipping update");
             return;
         }
 
         $p = [];
         switch ($doorStatus) {
-            case '2':
+            case 2:
                 $p = [255, 0, 0, 10, 10];
                 break;
-            case '1':
+            case 1:
                 $p = [255, 160, 0, 10, 0];
                 break;
-            case '0':
+            case 0:
             default:
-                $p = [0, 255, 0, 10, 0];
+                $p = [0, 255, 0, 0, 0];
                 break;
-            }
+        }
+
+        error_log("Sending downlink with RGB: " . json_encode($p));
 
         $result = DownlinkService::busylight($p[0], $p[1], $p[2], $p[3], $p[4]);
 
+        error_log("Downlink result: " . json_encode($result));
+
         if (!$result['success']) {
+            error_log("Downlink failed!");
             return;
         }
 

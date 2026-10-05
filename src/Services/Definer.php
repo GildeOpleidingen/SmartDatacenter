@@ -172,8 +172,4 @@ class Definer{
     }
 }
 
-
-
-
-
 ?>
