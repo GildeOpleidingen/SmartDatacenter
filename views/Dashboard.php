@@ -35,7 +35,7 @@
                                 <!-- <div class="text-right">
                                     div class="font-semibold"><//?= $statusLabel ?></div
                                 </div> -->
-                            <div class="w-11 block h-auto">
+                            <div class="<?= in_array($card->sensorType, ['soundLevelSensor', 'doorSensor'], true) ? 'w-32' : 'w-11' ?> block h-auto">
                                 <?php
                                 //echo $card->DOOR_OPEN_STATUS;
                                 echo $deviceIcon = $definer->getDeviceIcon($card->sensorType, $card->status, isset($card->DOOR_OPEN_STATUS) ? $card->DOOR_OPEN_STATUS : null, isset($card->motion) ? $card->motion : null, isset($card->state) ? $card->state : null) ?? "<img src='/img/sensors/default/GildeDataCenterIconGood.svg' width=\"64px\" class=\"ml-auto\">";
@@ -44,7 +44,14 @@
                             <div class="flex-grow"></div>
                             <ul class="flex flex-col items-center justify-center bg-[#001] overflow-hidden w-full"> <!-- card-inner -->
 
-                                    <p class="text-lg font-semibold"><?= htmlspecialchars($card->device_id) ?></p>
+                                    <p class="text-lg font-semibold"><?= htmlspecialchars(match (strtolower((string) $card->device_id)) {
+                                        'soundlevelsensor-001' => 'geluid-level',
+                                        'deursensor-002' => 'Voordeur',
+                                        'deursensor-003' => 'Achterdeur',
+                                        'motion-001' => 'Beweging',
+                                        'temphumidity-001' => 'Temperatuur',
+                                        default => $card->device_id,
+                                    }) ?></p>
                                     <?php foreach ($card as $key => $value):
                                         if ($key === "device_id" || $key === "sensorType" || $key === "button" || $key === "MOD" || $key === "temperature" || $key === "humi" || $key === "status") continue;
                                         ?>
