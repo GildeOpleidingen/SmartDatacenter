@@ -45,7 +45,7 @@ class DeviceStateService {
             error_log("Door state unchanged, skipping update");
             return;
         }
-
+        #Eerste is Rood, tweede is blauw, derde is groen, vierde is aan vijfde is uit.
         $p = [];
         switch ($doorStatus) {
             case 2:
@@ -55,8 +55,10 @@ class DeviceStateService {
                 $p = [255, 160, 0, 10, 0];
                 break;
             case 0:
+                $p = [0, 0, 255, 10, 0];
+                break;
             default:
-                $p = [0, 255, 0, 0, 0];
+                $p = [0, 255, 0, 10, 0];
                 break;
         }
 
