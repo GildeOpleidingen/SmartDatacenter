@@ -34,6 +34,10 @@ class Definer{
             'Ext' => 'External Sensor',
             'Systimestamp' => 'System Timestamp',
 
+            'la' => 'Huidig (dB)',
+            'lamax' => 'Hoogste (dB)',
+            'co2' => 'CO2 (ppm)',
+            'humidity' => 'Humidity (%)',
             'motion' => 'Motion',
             'battery_volt' => 'Battery Voltage (V)',
             'tamper' => 'Tamper',
@@ -127,15 +131,26 @@ class Definer{
         return $log->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getDeviceIcon($sensorType, $status, $doorState, $motion, $powerState){
+    public function getDeviceIcon($sensorType, $status, $doorState, $motion, $powerState, $soundLevel = null){
 
         if ($sensorType === 'soundLevelSensor') {
-            return '<img src="/img/sensors/soundLevelSensor/SoundLevelSensor.svg" width="128px" class="ml-auto">';
+            $soundLevelIcon = is_numeric($soundLevel) && (float) $soundLevel >= 80
+                ? 'SoundLevelSensorHigh.svg'
+                : 'SoundLevelSensor.svg';
+            return '<img src="/img/sensors/soundLevelSensor/' . $soundLevelIcon . '" width="128" class="block max-w-full h-auto ml-auto">';
+        }
+
+        if ($sensorType === 'indoorAmbienceMonitoringSensor') {
+            return '<img src="/img/sensors/indoorAmbienceMonitoringSensor/IndoorAmbienceMonitoringSensor.png" width="128" class="block max-w-full h-auto mx-auto">';
         }
 
         if ($sensorType === 'doorSensor') {
-            $doorIcon = (int) $doorState === 0 ? 'DoorSensor.svg' : 'DoorSensorOpen.svg';
-            return '<img src="/img/sensors/doorSensor/' . $doorIcon . '" width="128px" class="ml-auto">';
+            $doorIcon = match ((int) $doorState) {
+                0 => 'DoorSensor.svg',
+                1 => 'DoorSensorAjar.svg',
+                default => 'DoorSensorOpen.svg',
+            };
+            return '<img src="/img/sensors/doorSensor/' . $doorIcon . '" width="128" class="block max-w-full h-auto ml-auto">';
         }
 
         if (in_array($status, ['Warning', 'Error'])) {
@@ -160,7 +175,7 @@ class Definer{
             $path = "/img/sensors/default/GildeDataCenterIconGood.svg";
         }
         
-        return "<img src=\"$path\" width=\"64px\" class=\"ml-auto\">";
+        return "<img src=\"$path\" width=\"64\" class=\"block max-w-full h-auto ml-auto\">";
     }
 }
 
