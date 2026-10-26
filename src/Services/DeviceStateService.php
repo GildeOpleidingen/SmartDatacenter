@@ -74,14 +74,14 @@ class DeviceStateService {
         }
 
         $p = [];
-        // 1 = red, 2 = blue, 3 = green, 4 = orange
+         #Eerste is Rood, tweede is blauw, derde is groen, vierde is aan vijfde is uit.
         switch ((int) $doorStatus) {
             case 2:
                 $p = [255, 0, 0, 10, 10];
                 error_log("2");
                 break;
             case 1:
-                $p = [255, 100, 0, 10, 0];
+                $p = [255, 160, 0, 10, 0];
                 error_log("1");
                 break;
             case 0:
