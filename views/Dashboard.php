@@ -32,9 +32,6 @@
                         [$borderColor, $statusLabel] = $definer->status_color_and_label($card->status);  /* Will implement status later */
                         ?>
                         <div class="flex flex-col justify-between items-center rounded-xl border-2 overflow-hidden p-8 h-full" style="border-color: <?= $borderColor ?>"> <!-- card -->
-                                <!-- <div class="text-right">
-                                    div class="font-semibold"><//?= $statusLabel ?></div
-                                </div> -->
                             <div class="<?= in_array($card->sensorType, ['soundLevelSensor', 'doorSensor'], true) ? 'w-32' : 'w-11' ?> block h-auto">
                                 <?php
                                 //echo $card->DOOR_OPEN_STATUS;
@@ -76,5 +73,110 @@
     </div>
     <div class="main_footer"></div>
 </div>
+
+<script>
+let doorStatus = <?= (int) $initialDoorState ?>;
+let timeoutId = null;
+let alarmActive = false;
+
+async function pushDoorAlarmState(state) {
+  try {
+    await fetch('/api/door-alarm', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ door_status: state })
+    });
+  } catch (error) {
+    console.error('Failed to push door alarm state:', error);
+  }
+}
+
+function Alarm() {
+  if (doorStatus === 1) {
+    doorStatus = 2;
+    alarmActive = true;
+    console.log('Alarm triggered');
+    pushDoorAlarmState(2);
+    return true;
+  }
+
+  return false;
+}
+
+function startAlarmTimer() {
+  clearTimeout(timeoutId);
+  timeoutId = setTimeout(() => {
+    Alarm();
+  }, 10000);
+  console.log('Alarm timer started');
+}
+
+function TimerStop() {
+  clearTimeout(timeoutId);
+  timeoutId = null;
+  alarmActive = false;
+  console.log('Alarm timer stopped');
+}
+
+function setDoorStatus(newStatus) {
+  const nextStatus = Number(newStatus);
+
+  if (nextStatus === 0) {
+    doorStatus = 0;
+    TimerStop();
+    return;
+  }
+
+  if (nextStatus === 1) {
+    if (doorStatus === 2) {
+      return;
+    }
+
+    if (doorStatus !== 1) {
+      doorStatus = 1;
+      startAlarmTimer();
+    }
+    return;
+  }
+
+  if (nextStatus === 2) {
+    doorStatus = 2;
+    alarmActive = true;
+  }
+}
+
+async function refreshDoorState() {
+  try {
+    const response = await fetch('/api/door-state');
+    const data = await response.json();
+    const nextStatus = Number(data.door_status);
+
+    if (nextStatus === 0) {
+      if (doorStatus !== 0) {
+        setDoorStatus(0);
+      }
+      return;
+    }
+
+    if (nextStatus === 1 && doorStatus !== 2) {
+      setDoorStatus(1);
+      return;
+    }
+
+    if (nextStatus === 1 && doorStatus === 2) {
+      console.log('Alarm state already active; ignoring repeated open state.');
+    }
+  } catch (error) {
+    console.error('Failed to fetch door state:', error);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  setDoorStatus(doorStatus);
+  setInterval(refreshDoorState, 20000);
+});
+</script>
 </body>
 </html>
