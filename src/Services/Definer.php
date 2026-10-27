@@ -71,6 +71,19 @@ class Definer{
         }
     }
 
+    public function getDisplayName($deviceId) {
+        $aliases = [
+            'deursensor-002' => 'Voordeur',
+            'deursensor-003' => 'Achterdeur',
+            'temphumidity-001' => 'Temperatuur',
+            'soundlevelsensor-001' => 'Geluid-level',
+            'motion-001' => 'Beweging',
+        ];
+
+        $normalizedId = strtolower((string) $deviceId);
+        return $aliases[$normalizedId] ?? $deviceId;
+    }
+
     public function format_updated($ts) {
         if (!$ts) return "Never";
         $t1 = strtotime($ts);

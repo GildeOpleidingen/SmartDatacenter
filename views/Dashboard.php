@@ -60,7 +60,6 @@
                             </div>
                             <div class="flex-grow"></div>
                             <ul class="flex flex-col items-center justify-center bg-[#001] overflow-hidden w-full"> <!-- card-inner -->
-
                                     <p class="text-lg font-semibold"><?= htmlspecialchars(match (strtolower((string) $card->device_id)) {
                                         'powersocket-001' => 'Stopcontact',
                                         'soundlevelsensor-001' => 'Geluid-Level',
