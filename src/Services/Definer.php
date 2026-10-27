@@ -146,6 +146,11 @@ class Definer{
             return '<img src="/img/sensors/soundLevelSensor/SoundLevelSensor.svg" width="128px" class="ml-auto">';
         }
 
+        if ($sensorType === 'doorSensor') {
+            $doorIcon = (int) $doorState === 0 ? 'DoorSensor.svg' : 'DoorSensorOpen.svg';
+            return '<img src="/img/sensors/doorSensor/' . $doorIcon . '" width="128px" class="ml-auto">';
+        }
+
         if (in_array($status, ['Warning', 'Error'])) {
             $stateName = $status;
         } else {
