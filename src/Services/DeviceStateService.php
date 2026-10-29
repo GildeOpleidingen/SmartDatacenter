@@ -32,18 +32,18 @@ class DeviceStateService {
 
         $minutesOpen = $interval->days * 24 * 60 + $interval->h * 60 + $interval->i;
 
-        return ($minutesOpen >= 5) ? 2 : 1;
+        return ($minutesOpen >= 5) ? 1 : 1;
     }
 
-    public function streamDoorState() {
+    public function streamDoorState(DeviceStateService $service) {
         header('Content-Type: text/event-stream');
         header('Cache-Control: no-cache');
         header('Connection: keep-alive');
 
         $lastStatus = null;
 
-        while (!connection_aborted()) {
-            $status = $this->getDoorState();
+            while (true) {
+            $status = $service->getDoorState();
 
             if ($status !== $lastStatus) {
                 echo "data: " . json_encode(['door_status' => $status]) . "\n\n";
@@ -81,7 +81,7 @@ class DeviceStateService {
                 error_log("2");
                 break;
             case 1:
-                $p = [255, 0, 120, 10, 0];
+                $p = [255, 160, 0, 10, 0];
                 error_log("1");
                 break;
             case 0:
@@ -107,4 +107,4 @@ class DeviceStateService {
         $bl->updateCurrentColor($p[0], $p[1], $p[2], (int) $doorStatus);
         return 'success';
     }
-}
+} 
