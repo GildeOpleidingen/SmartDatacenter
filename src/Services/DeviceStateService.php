@@ -42,7 +42,7 @@ class DeviceStateService {
 
         $lastStatus = null;
 
-        while (true) {
+            while (true) {
             $status = $service->getDoorState();
 
             if ($status !== $lastStatus) {
@@ -107,4 +107,4 @@ class DeviceStateService {
         $bl->updateCurrentColor($p[0], $p[1], $p[2], (int) $doorStatus);
         return 'success';
     }
-}
+} 
