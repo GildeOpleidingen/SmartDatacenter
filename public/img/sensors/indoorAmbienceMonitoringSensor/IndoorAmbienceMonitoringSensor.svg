@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="576" height="432" viewBox="0 0 576 432" fill="none">
+  <defs>
+    <clipPath id="sensor-body">
+      <rect x="151" y="-3" width="274" height="438" rx="96"/>
+    </clipPath>
+  </defs>
+  <g stroke="#00516F" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none">
+    <path d="M5 141C42 113 82 167 118 139"/>
+    <path d="M5 215C42 187 82 241 118 213"/>
+    <path d="M5 288C42 260 82 314 118 286"/>
+    <path d="M458 139C494 167 534 113 571 141"/>
+    <path d="M458 213C494 241 534 187 571 215"/>
+    <path d="M458 286C494 314 534 260 571 288"/>
+  </g>
+  <g clip-path="url(#sensor-body)">
+    <path d="M199 418V384C199 361 218 342 241 342H335C358 342 377 361 377 384V418H199Z" fill="#00C853"/>
+  </g>
+  <rect x="151" y="-3" width="274" height="438" rx="96" stroke="#00516F" stroke-width="14"/>
+  <circle cx="288" cy="87" r="37" fill="#00C853" stroke="#00516F" stroke-width="14"/>
+  <g stroke="#00516F" stroke-width="14" stroke-linecap="round" fill="none">
+    <path d="M196 200C244 153 332 153 380 200"/>
+    <path d="M218 226C255 190 321 190 358 226"/>
+    <path d="M240 251C266 227 310 227 336 251"/>
+    <circle cx="288" cy="284" r="17"/>
+  </g>
+</svg>
