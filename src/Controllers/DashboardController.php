@@ -18,6 +18,18 @@ class DashboardController {
         require __DIR__ . '/../../views/Dashboard.php';
     }
 
+    public function dashboardData() {
+        header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+        header('Pragma: no-cache');
+        header('Expires: 0');
+
+        $parser = new DBParser();
+        $definer = new Definer();
+        $deviceCards = $parser->generateCards();
+
+        require __DIR__ . '/../../views/DashboardCards.php';
+    }
+
     public function doorState() {
         $deviceStateService = new DeviceStateService();
         $state = (int) $deviceStateService->getDoorState();
