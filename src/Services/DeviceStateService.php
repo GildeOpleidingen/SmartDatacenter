@@ -75,7 +75,7 @@ class DeviceStateService {
                 error_log("2");
                 break;
             case 1:
-                $p = [255, 100, 0, 10, 0];
+                $p = [255, 0, 120, 10, 0];
                 error_log("1");
                 break;
             case 0:
