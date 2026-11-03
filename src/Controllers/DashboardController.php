@@ -14,6 +14,7 @@ class DashboardController {
         $deviceCards = $parser->generateCards();
         $fields = $definer->getFields();
         $initialDoorState = (int) $deviceStateService->getDoorState();
+        $doorStatus = $initialDoorState;
 
         require __DIR__ . '/../../views/Dashboard.php';
     }
@@ -26,6 +27,7 @@ class DashboardController {
         $parser = new DBParser();
         $definer = new Definer();
         $deviceCards = $parser->generateCards();
+        $doorStatus = isset($_GET['door_status']) ? (int) $_GET['door_status'] : null;
 
         require __DIR__ . '/../../views/DashboardCards.php';
     }
