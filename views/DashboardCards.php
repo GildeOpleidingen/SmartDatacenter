@@ -48,10 +48,14 @@ foreach ($deviceCards as $card):
             }) ?></p>
             <?php foreach ($card as $key => $value):
                 if (!in_array($key, $visibleFields, true)) continue;
+                $displayValue = (string) $value;
+                if ($card->sensorType === 'doorSensor' && $key === 'DOOR_OPEN_STATUS') {
+                    $displayValue = $definer->door_state_label($value);
+                }
                 ?>
                 <li class="grid grid-cols-2 gap-1 w-full">
                     <span class="text-gray-300 text-right break-all text-xs"><?= htmlspecialchars($definer->getLabels($key)) ?></span>
-                    <span class="font-medium break-all text-xs" <?= ($card->sensorType === 'doorSensor' && $key === 'DOOR_OPEN_STATUS') ? 'data-door-state-val' : '' ?>>= <?= htmlspecialchars((string) $value) ?></span>
+                    <span class="font-medium break-all text-xs" <?= ($card->sensorType === 'doorSensor' && $key === 'DOOR_OPEN_STATUS') ? 'data-door-state-val' : '' ?>>= <?= htmlspecialchars($displayValue) ?></span>
                 </li>
             <?php endforeach; ?>
         </ul>

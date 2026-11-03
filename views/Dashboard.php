@@ -46,6 +46,12 @@ function updateDoorUi(status) {
   const statusNum = Number(status);
   const statusColor = statusNum === 0 ? '#22c55e' : (statusNum === 1 ? '#ff8800' : '#ff2b2b');
   const iconFile = statusNum === 0 ? 'DoorSensor.svg' : (statusNum === 1 ? 'DoorSensorAjar.svg' : 'DoorSensorOpen.svg');
+  const labelMap = {
+    0: 'Dicht',
+    1: 'Open',
+    2: 'Te lang open'
+  };
+  const statusLabel = labelMap[statusNum] ?? statusNum;
 
   document.querySelectorAll('[data-door-card]').forEach(card => {
     card.style.borderColor = statusColor;
@@ -56,7 +62,7 @@ function updateDoorUi(status) {
   });
 
   document.querySelectorAll('[data-door-state-val]').forEach(valSpan => {
-    valSpan.textContent = `= ${statusNum}`;
+    valSpan.textContent = `= ${statusLabel}`;
   });
 }
 
