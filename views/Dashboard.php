@@ -3,14 +3,22 @@
 <head>
     <title>Dashboard</title>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { background: #001; }
+        .body_wrapper {
+            width: min(100%, 1240px);
+            min-height: 100vh;
+            margin: 0 auto;
+            padding: 1rem;
+            box-sizing: border-box;
+        }
         .card-dot { width: 12px; height: 12px; border-radius: 9999px; background: #1E40AF; border: 3px solid white; }
     </style>
     <link rel="icon" href="/img/favicon.svg" sizes="any" type="image/svg+xml">
 </head>
-<body class="text-white p-10">
+<body class="min-h-screen text-white">
 <div class="body_wrapper">
     <div class="main_navigation">
         <section style="padding: 1rem 1.5rem 1rem 1.5rem;  align-items: center;">
@@ -23,8 +31,8 @@
             </section>
     </div>
     <div class="main_wrapper">
-        <section class="px-4 py-8 sm:px-8 lg:px-12">
-            <div class="container mx-auto w-full max-w-screen-xl">
+        <section class="px-2 py-4 sm:px-4 lg:px-6">
+            <div class="container mx-auto w-full max-w-[1240px]">
                 <div id="dashboard-data" class="grid w-full grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                     <?php require __DIR__ . '/DashboardCards.php'; ?>
                 </div>
