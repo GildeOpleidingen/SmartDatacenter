@@ -36,10 +36,29 @@
 </div>
 
 <script>
-let doorStatus = <?= (int) $initialDoorState ?>;
+let doorStatus = null;
+const initialDoorState = <?= (int) $initialDoorState ?>;
 let timeoutId = null;
 let alarmActive = false;
 let dashboardRefreshInProgress = false;
+
+function updateDoorUi(status) {
+  const statusNum = Number(status);
+  const statusColor = statusNum === 0 ? '#22c55e' : (statusNum === 1 ? '#ff8800' : '#ff2b2b');
+  const iconFile = statusNum === 0 ? 'DoorSensor.svg' : (statusNum === 1 ? 'DoorSensorAjar.svg' : 'DoorSensorOpen.svg');
+
+  document.querySelectorAll('[data-door-card]').forEach(card => {
+    card.style.borderColor = statusColor;
+    const iconImg = card.querySelector('img[src*="doorSensor"]');
+    if (iconImg) {
+      iconImg.src = `/img/sensors/doorSensor/${iconFile}`;
+    }
+  });
+
+  document.querySelectorAll('[data-door-state-val]').forEach(valSpan => {
+    valSpan.textContent = `= ${statusNum}`;
+  });
+}
 
 async function pushDoorAlarmState(state) {
   try {
@@ -60,7 +79,9 @@ function Alarm() {
     doorStatus = 2;
     alarmActive = true;
     console.log('Alarm triggered');
+    updateDoorUi(2);
     pushDoorAlarmState(2);
+    refreshDashboardData();
     return true;
   }
 
@@ -72,7 +93,7 @@ function startAlarmTimer() {
   timeoutId = setTimeout(() => {
     Alarm();
   }, 10000);
-  console.log('Alarm timer started');
+  console.log('Alarm timer started (10s)');
 }
 
 function TimerStop() {
@@ -86,8 +107,14 @@ function setDoorStatus(newStatus) {
   const nextStatus = Number(newStatus);
 
   if (nextStatus === 0) {
+    if (doorStatus === 0) {
+      return;
+    }
     doorStatus = 0;
     TimerStop();
+    updateDoorUi(0);
+    pushDoorAlarmState(0);
+    refreshDashboardData();
     return;
   }
 
@@ -98,7 +125,10 @@ function setDoorStatus(newStatus) {
 
     if (doorStatus !== 1) {
       doorStatus = 1;
+      updateDoorUi(1);
       startAlarmTimer();
+      pushDoorAlarmState(1);
+      refreshDashboardData();
     }
     return;
   }
@@ -106,12 +136,14 @@ function setDoorStatus(newStatus) {
   if (nextStatus === 2) {
     doorStatus = 2;
     alarmActive = true;
+    updateDoorUi(2);
+    refreshDashboardData();
   }
 }
 
 async function refreshDoorState() {
   try {
-    const response = await fetch('/api/door-state');
+    const response = await fetch(`/api/door-state?_=${Date.now()}`, { cache: 'no-store' });
     const data = await response.json();
     const nextStatus = Number(data.door_status);
 
@@ -122,13 +154,11 @@ async function refreshDoorState() {
       return;
     }
 
-    if (nextStatus === 1 && doorStatus !== 2) {
-      setDoorStatus(1);
+    if (nextStatus === 1) {
+      if (doorStatus !== 1 && doorStatus !== 2) {
+        setDoorStatus(1);
+      }
       return;
-    }
-
-    if (nextStatus === 1 && doorStatus === 2) {
-      console.log('Alarm state already active; ignoring repeated open state.');
     }
   } catch (error) {
     console.error('Failed to fetch door state:', error);
@@ -136,8 +166,8 @@ async function refreshDoorState() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  setDoorStatus(doorStatus);
-  setInterval(refreshDoorState, 20000);
+  setDoorStatus(initialDoorState);
+  setInterval(refreshDoorState, 2000);
   setInterval(refreshDashboardData, 2000);
 });
 
@@ -148,7 +178,7 @@ async function refreshDashboardData() {
 
   dashboardRefreshInProgress = true;
   try {
-    const response = await fetch(`/dashboard/data?_=${Date.now()}`, { cache: 'no-store' });
+    const response = await fetch(`/dashboard/data?door_status=${encodeURIComponent(doorStatus)}&_=${Date.now()}`, { cache: 'no-store' });
     if (!response.ok) {
       throw new Error(`Dashboard refresh failed with status ${response.status}`);
     }

@@ -26,13 +26,7 @@ class DeviceStateService {
             return 0;
         }
 
-        $openedAt = new DateTime($latestActivity['dateTime'] ?? 'now');
-        $now = new DateTime();
-        $interval = $openedAt->diff($now);
-
-        $minutesOpen = $interval->days * 24 * 60 + $interval->h * 60 + $interval->i;
-
-        return ($minutesOpen >= 5) ? 1 : 1;
+        return 1;
     }
 
     public function streamDoorState(DeviceStateService $service) {
