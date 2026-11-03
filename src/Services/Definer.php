@@ -58,9 +58,12 @@ class Definer{
     }
 
     public function door_state_label($v) {
-        if ($v == 1) return "Open";
-        if ($v == 0) return "Closed";
-        return "Unknown";
+        return match ((string) $v) {
+            '0' => 'Dicht',
+            '1' => 'Open',
+            '2' => 'Te lang open',
+            default => 'Unknown',
+        };
     }
 
     public function status_color_and_label($logStatus) {
