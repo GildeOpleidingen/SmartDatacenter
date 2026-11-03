@@ -30,7 +30,8 @@ foreach ($deviceCards as $card):
     }
     $visibleFields = $customerVisibleFields[strtolower((string) $card->device_id)] ?? [];
     ?>
-    <div class="flex min-w-0 flex-col justify-between items-center rounded-xl border-2 overflow-hidden p-8 h-full" style="border-color: <?= $borderColor ?>" <?= $card->sensorType === 'doorSensor' ? 'data-door-card' : '' ?>>
+
+    <div class="flex min-w-0 flex-col justify-between items-center rounded-xl border-2 overflow-hidden p-5 h-full" style="border-color: <?= $borderColor ?>">
         <div class="<?= in_array($card->sensorType, ['soundLevelSensor', 'doorSensor', 'indoorAmbienceMonitoringSensor'], true) ? 'w-32' : 'w-11' ?> block max-w-full h-auto">
             <?= $definer->getDeviceIcon($card->sensorType, $card->status, isset($card->DOOR_OPEN_STATUS) ? $card->DOOR_OPEN_STATUS : null, isset($card->motion) ? $card->motion : null, isset($card->state) ? $card->state : null, isset($card->la) ? $card->la : null) ?? "<img src='/img/sensors/default/GildeDataCenterIconGood.svg' width=\"64\" class=\"block max-w-full h-auto ml-auto\">" ?>
         </div>
